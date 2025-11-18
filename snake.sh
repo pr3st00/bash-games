@@ -3,18 +3,17 @@
 . ./subs/array.sh
 . ./subs/board.sh
 . ./subs/snake.sh
+. ./subs/food.sh
 . ./subs/game.sh
+. ./subs/screen.sh
 
 . ./subs/functions.sh
 
 main() {
-	clear
 	hide_cursor
-	handle_signals
-	game_loop
+	game_loop &
 	PID=$!
 	read_input $PID
-	wait
 	restore_cursor
 }
 

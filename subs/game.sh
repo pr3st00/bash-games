@@ -1,55 +1,75 @@
 SPEED=10
 DIRECTION=D
 
-FIFO_FILE=/tmp/gameinput
+# signals
+SIG_UP=USR1
+SIG_RIGHT=USR2
+SIG_DOWN=URG
+SIG_LEFT=IO
+SIG_QUIT=WINCH
+SIG_DEAD=HUP
 
-read_input() {
-	local key parent_pid
-
-	parent_pid=$1
-
-	debug "Parent id is $parent_pid"
-
-	while read -s -N 1 key 
-	do
-		trace2 "Got key $key" 	&& read
-
-		case "$key" in
-			w) DIRECTION=U;;
-			s) DIRECTION=D;;
-			a) DIRECTION=L;;
-			d) DIRECTION=R;;
-			q) break;;
-		esac
-		
-		debug "Saving file $FIFO_FILE"
-		echo $key > $FIFO_FILE
-		#kill -SIGUSR1 $parent_pid
-	done </dev/stdin
+change_direction() {
+	local direction=$1
+	trace2 "Changing direction to [$direction]"
+	
+	DIRECTION="$direction"
 }
 
-get_input() {
-	local defaultValue
+handle_signals() {
+	trap "change_direction U" $SIG_UP
+	trap "change_direction R" $SIG_RIGHT
+	trap "change_direction D" $SIG_DOWN
+	trap "change_direction L" $SIG_LEFT
+	trap "exit 1;"		  $SIG_QUIT
+}
 
-	defaultValue=$1
+read_input() {
+	local key game_pid
 
-	if [[ -f $FIFO_FILE ]]; then
-		cat $FIFO_FILE;
-	else
-		echo $defaultValue
-	fi 
+	game_pid=$1
+
+	debug "Game PID is $game_pid"
+
+	trap "" SIGINT SIGQUIT
+	trap "return;" $SIG_DEAD
+
+	while true; do
+		read -s -n 1 key
+		trace2 "Got key $key"
+
+		case "$key" in
+			[qQ]) 	kill -$SIG_QUIT		$game_pid
+				return
+				;;
+			[wW]) 	kill -$SIG_UP		$game_pid
+				;;
+			[sS])	kill -$SIG_DOWN		$game_pid
+				;;
+			[aA]) 	kill -$SIG_LEFT		$game_pid
+				;;
+			[dD])	kill -$SIG_RIGHT	$game_pid
+				;;
+		esac
+	done
 }
 
 colision_detection() {
-
 	local x y
-	local key
+	local key value
 
 	for key in $(array.keys snakeHead); do
 		x=$(echo $key | cut -d',' -f1)
 		y=$(echo $key | cut -d',' -f2)
 	done
+
+	#value=$(array.get "board" "$x,$y")
 	
+	#if [[ $value != "$FOOD" && $value != "$BLANK" && $value != "$SNAKE_HEAD" ]]; then
+	#	trace2 "Colision detected for [$x,$y] and value [$value]" && sleep 10
+	#	return 0
+	#fi
+
 	if [[ $x -le 1 || $x -ge $((COLS-1)) ]]; then
 		trace2 "Colision detected for X = $x"
 		return 0
@@ -66,27 +86,30 @@ colision_detection() {
 
 game_over() {
 	clear
-	echoAt "**** GAME OVER *****" $((COLS/2)) $((ROWS/2))
+	echoAt "${TEXT_COLOR}**** GAME OVER *****${NO_COLOR}" $((COLS/2-20)) $((ROWS/2))
 	read
 	exit;
 }
 
 game_loop() {
+	handle_signals
+
 	snake.initialize
 	board.initialize
+	food.create
 	board.draw
 	
 	while (true); do
 		timer_start "game_loop"
 		changedCells=()
-		DIRECTION=$(get_input "R")
-		
+
 		snake.move
-		board.draw.optimized
+		board.draw
 		sleep $((10-$SPEED));
 		if colision_detection; then
 			game_over
 		fi
+
 		timer_stop "game_loop"		
 	done
 }

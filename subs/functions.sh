@@ -1,7 +1,10 @@
 DEBUG=0
-TRACE=1
+TRACE=0
 TIMING=0
 TIMER=0
+
+TEXT_COLOR="\e[31;43m"
+NO_COLOR="\e[0m"
 
 timer_start() {
 	if [[ $TIMING -eq 0 ]]; then
@@ -38,30 +41,25 @@ trace2() {
 echoAt() {
 	timer_start "echoAt"
 	local mesg x y
+
 	mesg=$1
 	x=$2
 	y=$3
+
 	echo -e "\033[${y};${x}H$mesg"
 	timer_stop "echoAt"
 }
 
-function trap_signal() {
-	debug "Signal received, reading $FIFO_FILE "
-	character=$(cat $FIFO_FILE)
-}
-
 restore_cursor() {
 	echo -e "\033[?25h"
+	stty echo
 	clear
 }
 
 hide_cursor() {
+	clear
+	stty -echo
 	echo -e "\033[?25l"
-}
-
-handle_signals() {
-	trap trap_signal SIGUSR1
-	trap restore_cursor SIGTERM
 }
 
 # EOF

@@ -1,5 +1,8 @@
-SNAKE_TAIL="T"
-SNAKE_HEAD="H"
+SNAKE_COLOR="\e[32;42m"
+NO_COLOR="\e[0m"
+
+SNAKE_TAIL="${SNAKE_COLOR}T${NO_COLOR}"
+SNAKE_HEAD="${SNAKE_COLOR}H${NO_COLOR}"
 
 snake.initialize() {
 	timer_start "snake.initialize"
@@ -45,23 +48,39 @@ snake.move() {
 	
 	trace2 "Moving snakeHead to $x $y"
 	array.add snakeHead "$x,$y" "$SNAKE_HEAD"
+	changedCells+=("$x,$y")
 
 	snake.trace "New Head"
-	
-	# 2. Move
-	trace2 "Removing snakeTail last element"
-	removedKey=$(array.remove.last snakeTail 1)
-	array.remove.last snakeTail
-	trace2 "Element to be removed: $removedKey"
 
-	array.add "board" "$removedKey" "$BLANK"
+	if [[ $(array.get "board" "$x,$y") == "$FOOD" ]]; then
+		food.eat "$x,$y"
+		food.create
+	elif [[ $(array.get "board" "$x,$y") == "TAIL" ]]; then
+		game_over
+	else
+		# 2. Move
+		trace2 "Removing snakeTail last element"
+		removedKey=$(array.remove.last snakeTail 1)
+		array.remove.last snakeTail
+		trace2 "Element to be removed: $removedKey"
+
+		array.add "board" "$removedKey" "$BLANK"
+		changedCells+=("$removedKey")
+	fi
 
 	snake.trace "Final"
 
-	changedCells+=($(array.keys snakeHead))
-	changedCells+=($(array.keys snakeTail))
-	
 	timer_stop "snake.move"
+}
+
+snake.isEaten() {
+	for keys in $(arrays.keys snakeHead); do
+		if [[ $(array.get "board" $key) == "$FOOD" ]]; then
+			return 0;
+		fi
+	done
+
+	return 1;
 }
 
 snake.trace() {

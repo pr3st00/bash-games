@@ -1,0 +1,26 @@
+WORKERS=10
+
+screen.refresh() {
+	trace "Refreshing screen with $WORKERS workers"
+
+        CHUNK_SIZE=$(( (${#changedCells[@]} + WORKERS - 1) / WORKERS ))
+
+        for ((i=0; i<${#changedCells[@]}; i+=CHUNK_SIZE)); do
+                chunk=("${changedCells[@]:i:CHUNK_SIZE}")
+                (
+                for key in "${chunk[@]}"
+                do
+                        value=$(array.get "board" "$key")
+                        [[ $value == "$BLANK" ]] && value=" ";
+
+                        x=$(echo $key | cut -d',' -f1)
+                        y=$(echo $key | cut -d',' -f2)
+                        debug "Drawing character [$value] at position $x $y - changedCell = $key"
+                        echoAt "$value" $x $y
+                done ) &
+        done
+	
+	trace "Refresh completed"
+}
+
+# EOF
