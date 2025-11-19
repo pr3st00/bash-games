@@ -7,18 +7,21 @@
 . ./subs/game.sh
 . ./subs/screen.sh
 
-. ./subs/functions.sh
+. ./subs/logging.sh
 
 main() {
 	local PID
 
-	hide_cursor
+	screen.hide_cursor
 	game_loop &
 	PID=$!
 	read_input $PID
-	restore_cursor
+	game_over
+	screen.restore_cursor
 }
 
 main "$@"
+
+exit 0
 
 # EOF

@@ -1,3 +1,6 @@
+TEXT_COLOR="\e[31;43m"
+NO_COLOR="\e[0m"
+
 WORKERS=10
 
 screen.refresh() {
@@ -16,11 +19,35 @@ screen.refresh() {
                         x=$(echo $key | cut -d',' -f1)
                         y=$(echo $key | cut -d',' -f2)
                         debug "Drawing character [$value] at position $x $y - changedCell = $key"
-                        echoAt "$value" $x $y
+                        screen.echoAt "$value" $x $y
                 done ) &
         done
 	
 	trace "Refresh completed"
+}
+
+screen.restore_cursor() {
+        echo -e "\033[?25h"
+        stty echo
+        clear
+}
+
+screen.hide_cursor() {
+        clear
+        stty -echo
+        echo -e "\033[?25l"
+}
+
+screen.echoAt() {
+        timer_start "echoAt"
+        local mesg x y
+
+        mesg=$1
+        x=$2
+        y=$3
+
+        echo -e "\033[${y};${x}H$mesg"
+        timer_stop "echoAt"
 }
 
 # EOF

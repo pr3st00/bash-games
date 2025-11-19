@@ -1,4 +1,4 @@
-SPEED=10
+SPEED=5
 DIRECTION=D
 
 # signals
@@ -86,9 +86,9 @@ colision_detection() {
 
 game_over() {
 	clear
-	echoAt "${TEXT_COLOR}**** GAME OVER *****${NO_COLOR}" $((COLS/2-20)) $((ROWS/2))
+	screen.echoAt "${TEXT_COLOR}**** GAME OVER *****${NO_COLOR}" $((COLS/2-20)) $((ROWS/2))
 	read
-	exit;
+	clear
 }
 
 game_loop() {
@@ -107,7 +107,8 @@ game_loop() {
 		board.draw
 		sleep $((10-$SPEED));
 		if colision_detection; then
-			game_over
+			kill -$SIG_DEAD	$$
+			return 0
 		fi
 
 		timer_stop "game_loop"		

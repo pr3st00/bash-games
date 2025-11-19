@@ -55,8 +55,6 @@ snake.move() {
 	if [[ $(array.get "board" "$x,$y") == "$FOOD" ]]; then
 		food.eat "$x,$y"
 		food.create
-	elif [[ $(array.get "board" "$x,$y") == "TAIL" ]]; then
-		game_over
 	else
 		# 2. Move
 		trace2 "Removing snakeTail last element"
@@ -73,7 +71,7 @@ snake.move() {
 	timer_stop "snake.move"
 }
 
-snake.isEaten() {
+snake.hasEaten() {
 	for keys in $(arrays.keys snakeHead); do
 		if [[ $(array.get "board" $key) == "$FOOD" ]]; then
 			return 0;
@@ -86,8 +84,8 @@ snake.isEaten() {
 snake.trace() {
 	local stage=$1
 
-	trace2 "\n\nSNAKE HEAD ($stage): \n\n $(array.print.sorted snakeHead)" && sleep 1
-	trace2 "\n\nSNAKE TAIL ($stage): \n\n $(array.print.sorted snakeTail)" && sleep 1
+	trace2 "\n\nSNAKE HEAD ($stage): \n\n $(array.print.sorted snakeHead)" 
+	trace2 "\n\nSNAKE TAIL ($stage): \n\n $(array.print.sorted snakeTail)"
 }
 
 # EOF

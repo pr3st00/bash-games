@@ -6,8 +6,8 @@ BLANK="B"
 BORDERX="${BORDER_COLOR} ${NO_COLOR}"
 BORDERY="${BORDER_COLOR} ${NO_COLOR}"
 
-COLS=80
-ROWS=40
+COLS=50
+ROWS=30
 
 declare -a changedCells
 
