@@ -16,12 +16,9 @@
 . ./subs/logging.sh
 
 main() {
-	local PID
-
 	screen.hide_cursor
 	game_loop &
-	PID=$!
-	read_input $PID
+	read_input $!
 	game_over
 	screen.restore_cursor
 }

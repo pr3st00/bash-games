@@ -1,6 +1,7 @@
 # Game parameters
 SPEED=10
 DIRECTION=D
+INITIAL_FOOD=3
 
 # Signals
 SIG_UP=USR1
@@ -10,9 +11,21 @@ SIG_LEFT=IO
 SIG_QUIT=WINCH
 SIG_DEAD=HUP
 
+declare -A prohibitedMoves
+
+prohibitedMoves["U"]="D";
+prohibitedMoves["D"]="U";
+prohibitedMoves["L"]="R";
+prohibitedMoves["R"]="L";
+
 change_direction() {
 	local direction=$1
 	trace2 "Changing direction to [$direction]"
+
+	if [[ ${prohibitedMoves[$DIRECTION]} == "$direction" ]]; then
+		trace2 "Prohibited Move"
+		return 1
+	fi
 	
 	DIRECTION="$direction"
 }
@@ -57,32 +70,42 @@ read_input() {
 
 colision_detection() {
 	local x y
-	local key value
+	local key i
+
+	trace "Running colision detection"
 
 	for key in $(array.keys snakeHead); do
 		x=$(echo $key | cut -d',' -f1)
 		y=$(echo $key | cut -d',' -f2)
 	done
 
+	# Have we hit right or left walls?
 	if [[ $x -le 1 || $x -ge $((COLS-1)) ]]; then
 		trace2 "Colision detected for X = $x"
 		return 0
 	fi
 
+	# Have we hit up or down walls?
 	if [[ $y -le 1 || $y -ge $((ROWS-1)) ]]; then
 		trace2 "Colision detected for Y = $y"
 		return 0
 	fi
 
-	trace2 "No colision detected for X = $x"
+	# Does our head overlaps with our tail after movement?
+	if [[ $(array.get "board" "$x,$y") == "$SNAKE_TAIL" ]]; then
+		trace2 "Colision detected for [$x,$y]" && sleep 5
+		return 0
+	fi
+
+	trace2 "No colision detected for [$x,$y]"
 	return 1
 }
 
 game_over() {
 	clear
-	screen.echoAt "${TEXT_COLOR}    GAME OVER    ${NO_COLOR}" $((COLS/2-10)) $((ROWS/2))
-	screen.echoAt "${TEXT_COLOR} (press any key) ${NO_COLOR}" $((COLS/2-10)) $((ROWS/2 + 1))
-	read -s -n 1
+	screen.echoAt "${TEXT_COLOR}     GAME OVER     ${NO_COLOR}" $((COLS/2-10)) $((ROWS/2))
+	screen.echoAt "${TEXT_COLOR} (press enter key) ${NO_COLOR}" $((COLS/2-10)) $((ROWS/2 + 1))
+	read -s 
 	clear
 }
 
@@ -91,7 +114,7 @@ game_loop() {
 
 	snake.initialize
 	board.initialize
-	food.create
+	food.create $INITIAL_FOOD
 	board.draw
 	
 	while (true); do
@@ -99,13 +122,14 @@ game_loop() {
 		changedCells=()
 
 		snake.move
-		board.draw
-		sleep $((10-$SPEED));
 
 		if colision_detection; then
 			kill -$SIG_DEAD	$$
 			return 0
 		fi
+
+		board.draw
+		sleep $((10-$SPEED));
 
 		timer_stop "game_loop"		
 	done

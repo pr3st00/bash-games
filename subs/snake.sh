@@ -51,7 +51,7 @@ snake.move() {
 
 	if [[ $(array.get "board" "$x,$y") == "$FOOD" ]]; then
 		food.eat "$x,$y"
-		food.create
+		food.create 1
 	else
 		# 2. Move
 		trace2 "Removing snakeTail last element"
