@@ -9,9 +9,11 @@
 
 . ../subs/logging.sh
 
+TRACE=1
+
 pause() {
 	echo
-	echo "(press enter)" && read
+	trace2 "(press enter)" && read
 	echo
 }
 
@@ -37,68 +39,6 @@ echo "Testing board drawing"
 pause
 clear
 board.draw
-pause
-clear
-
-echo "Printing original array (sorted)"
-echo
-array.print.sorted myArray
-echo
-pause
-clear
-
-echo "Printing original array keys"
-echo
-array.keys "myArray"
-echo
-pause
-clear
-
-echo "Printing original array (original order)"
-echo
-array.print myArray
-echo
-pause
-clear
-
-array.copy myArray destArray
-
-echo "Printing copied array"
-echo
-array.print destArray
-echo
-pause
-clear
-
-echo "Removing first element from array"
-echo
-array.remove myArray "8,8"
-array.print myArray
-echo
-pause
-clear
-
-echo "Removing last element from array"
-echo
-array.remove.last myArray
-array.print myArray
-echo
-pause
-clear
-
-clear
-echo "Testing array.rowContains"
-
-for value in nonExistent secondValue
-	do
-		echo
-		echo "VALUE: $value"
-		if array.rowContains myArray 1 "$value"; then
-		echo "Array contains $value"
-	else
-		echo "Array DOES NOT contain $value"
-	fi
-done
 pause
 clear
 
