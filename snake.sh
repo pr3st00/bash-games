@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#
+# A snake game written in bash.
+#
+# Author: Fernando Costa de Almeida
+#
+
 . ./subs/array.sh
 . ./subs/board.sh
 . ./subs/snake.sh

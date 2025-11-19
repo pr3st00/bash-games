@@ -3,9 +3,11 @@
 . ../subs/array.sh
 . ../subs/board.sh
 . ../subs/snake.sh
+. ../subs/food.sh
 . ../subs/game.sh
+. ../subs/screen.sh
 
-. ../subs/functions.sh
+. ../subs/logging.sh
 
 declare -A myArray
 declare -A destArray

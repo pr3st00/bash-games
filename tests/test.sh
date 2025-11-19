@@ -3,9 +3,11 @@
 . ../subs/array.sh
 . ../subs/board.sh
 . ../subs/snake.sh
+. ../subs/food.sh
 . ../subs/game.sh
+. ../subs/screen.sh
 
-. ../subs/functions.sh
+. ../subs/logging.sh
 
 pause() {
 	echo
@@ -19,7 +21,7 @@ array.add "myArray" "1,2" "thirdValue at 1 2"
 
 clear
 echo "Testing echoAt '|' at position 10 4"
-echoAt "|" 10 4
+screen.echoAt "|" 10 4
 pause
 clear
 

@@ -1,4 +1,4 @@
-SPEED=5
+SPEED=10
 DIRECTION=D
 
 # signals
@@ -62,13 +62,6 @@ colision_detection() {
 		x=$(echo $key | cut -d',' -f1)
 		y=$(echo $key | cut -d',' -f2)
 	done
-
-	#value=$(array.get "board" "$x,$y")
-	
-	#if [[ $value != "$FOOD" && $value != "$BLANK" && $value != "$SNAKE_HEAD" ]]; then
-	#	trace2 "Colision detected for [$x,$y] and value [$value]" && sleep 10
-	#	return 0
-	#fi
 
 	if [[ $x -le 1 || $x -ge $((COLS-1)) ]]; then
 		trace2 "Colision detected for X = $x"
