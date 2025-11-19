@@ -1,7 +1,8 @@
+# Game parameters
 SPEED=10
 DIRECTION=D
 
-# signals
+# Signals
 SIG_UP=USR1
 SIG_RIGHT=USR2
 SIG_DOWN=URG
@@ -100,6 +101,7 @@ game_loop() {
 		snake.move
 		board.draw
 		sleep $((10-$SPEED));
+
 		if colision_detection; then
 			kill -$SIG_DEAD	$$
 			return 0

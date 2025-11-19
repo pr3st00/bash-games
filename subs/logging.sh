@@ -1,3 +1,4 @@
+# Logging parameters
 DEBUG=0
 TRACE=0
 TIMING=0

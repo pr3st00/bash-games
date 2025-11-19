@@ -1,6 +1,7 @@
 TEXT_COLOR="\e[31;43m"
 NO_COLOR="\e[0m"
 
+# Number of process spawn for updating the screen
 WORKERS=10
 
 screen.refresh() {
