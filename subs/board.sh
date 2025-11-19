@@ -1,4 +1,7 @@
 # Board parameters
+COLS=50
+ROWS=30
+
 BORDER_COLOR="\e[30;43m"
 NO_COLOR="\e[0m"
 
@@ -6,9 +9,7 @@ BLANK="B"
 BORDERX="${BORDER_COLOR} ${NO_COLOR}"
 BORDERY="${BORDER_COLOR} ${NO_COLOR}"
 
-COLS=50
-ROWS=30
-
+# Holds cells for which the value changed, so the screen refresher can update them
 declare -a changedCells
 
 # --------------------------------
