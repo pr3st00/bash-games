@@ -24,8 +24,8 @@ snake.move() {
 
 	snake.trace "Initial"
 
-	changedCells+=($(array.keys snakeHead))
-	changedCells+=($(array.keys snakeTail))
+	#changedCells+=($(array.keys snakeHead))
+	#changedCells+=($(array.keys snakeTail))
 
 	# 1. Move head to the selected direction
 	for key in $(array.keys snakeHead); do

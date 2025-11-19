@@ -79,8 +79,9 @@ colision_detection() {
 
 game_over() {
 	clear
-	screen.echoAt "${TEXT_COLOR}**** GAME OVER *****${NO_COLOR}" $((COLS/2-20)) $((ROWS/2))
-	read
+	screen.echoAt "${TEXT_COLOR}    GAME OVER    ${NO_COLOR}" $((COLS/2-10)) $((ROWS/2))
+	screen.echoAt "${TEXT_COLOR} (press any key) ${NO_COLOR}" $((COLS/2-10)) $((ROWS/2 + 1))
+	read -s -n 1
 	clear
 }
 

@@ -28,7 +28,6 @@ food.eat() {
 
 	trace "Eating food"
 
-	array.add board "$x,$y" "$BLANK"
 	changedCells+=("$x,$y")
 
 	timer_stop "food.eat"
