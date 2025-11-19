@@ -10,6 +10,8 @@
 . ./subs/functions.sh
 
 main() {
+	local PID
+
 	hide_cursor
 	game_loop &
 	PID=$!
