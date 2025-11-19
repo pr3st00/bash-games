@@ -87,7 +87,7 @@ pause
 clear
 
 clear
-echo "Testing array.rowContains" 
+echo "Testing array.rowContains"
 
 for value in nonExistent secondValue
 	do
