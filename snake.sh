@@ -12,6 +12,7 @@
 . ./subs/food.sh
 . ./subs/game.sh
 . ./subs/screen.sh
+. ./subs/score.sh
 
 . ./subs/logging.sh
 

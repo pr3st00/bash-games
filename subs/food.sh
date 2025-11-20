@@ -34,6 +34,7 @@ food.eat() {
 
 	trace "Eating food"
 
+	score.add 10
 	changedCells+=("$x,$y")
 
 	timer_stop "food.eat"

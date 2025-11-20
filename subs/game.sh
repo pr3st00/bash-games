@@ -2,6 +2,7 @@
 SPEED=10
 DIRECTION=D
 INITIAL_FOOD=3
+SCORE=0
 
 # Signals
 SIG_UP=USR1
@@ -104,7 +105,8 @@ colision_detection() {
 game_over() {
 	clear
 	screen.echoAt "${TEXT_COLOR}     GAME OVER     ${NO_COLOR}" $((COLS/2-10)) $((ROWS/2))
-	screen.echoAt "${TEXT_COLOR} (press enter key) ${NO_COLOR}" $((COLS/2-10)) $((ROWS/2 + 1))
+	screen.echoAt "${TEXT_COLOR}   SCORE: $SCORE   ${NO_COLOR}" $((COLS/2-10)) $((ROWS/2 + 1))
+	screen.echoAt "${TEXT_COLOR} (press enter key) ${NO_COLOR}" $((COLS/2-10)) $((ROWS/2 + 2))
 	read -s 
 	clear
 }
@@ -121,6 +123,7 @@ game_loop() {
 		timer_start "game_loop"
 		changedCells=()
 
+		score.refresh
 		snake.move
 
 		if colision_detection; then
