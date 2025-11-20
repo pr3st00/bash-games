@@ -4,8 +4,8 @@ NO_COLOR="\e[0m"
 
 score.refresh() {
 	trace "Refreshing score"
+        trace2 "Current score is $SCORE"
 
-        debug "Drawing character [$value] at position $x $y - changedCell = $key"
 	screen.echoAt "${TEXT_COLOR} SCORE: $SCORE ${NO_COLOR}" $((DELTA_X + 1)) $((DELTA_Y - 1)) 
 
 	trace "Refresh completed"

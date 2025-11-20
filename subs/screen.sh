@@ -2,8 +2,8 @@
 TEXT_COLOR="\e[31;43m"
 NO_COLOR="\e[0m"
 
-DELTA_X=5
-DELTA_Y=3
+DELTA_X=2
+DELTA_Y=2
 
 # Number of process spawn for updating the screen
 WORKERS=10
