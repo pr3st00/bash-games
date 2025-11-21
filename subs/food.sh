@@ -37,6 +37,8 @@ food.eat() {
 	score.add 10
 	changedCells+=("$x,$y")
 
+	screen.bip
+
 	timer_stop "food.eat"
 }
 

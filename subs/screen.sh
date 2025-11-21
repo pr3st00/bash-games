@@ -55,4 +55,8 @@ screen.echoAt() {
         timer_stop "echoAt"
 }
 
+screen.bip() {
+	echo -ne '\a';
+}
+
 # EOF
