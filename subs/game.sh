@@ -31,11 +31,11 @@ game.change.direction() {
 }
 
 game.handle.signals() {
-	trap "game.change.direction U" $SIG_UP
-	trap "game.change.direction R" $SIG_RIGHT
-	trap "game.change.direction D" $SIG_DOWN
-	trap "game.change.direction L" $SIG_LEFT
-	trap "exit 1;"		  $SIG_QUIT
+	trap "game.change.direction U"	$SIG_UP
+	trap "game.change.direction R"	$SIG_RIGHT
+	trap "game.change.direction D"	$SIG_DOWN
+	trap "game.change.direction L"	$SIG_LEFT
+	trap "exit 1;"		  	$SIG_QUIT
 }
 
 game.read.input() {

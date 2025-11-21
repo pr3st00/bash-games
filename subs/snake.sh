@@ -68,16 +68,6 @@ snake.move() {
 	timer_stop "snake.move"
 }
 
-snake.hasEaten() {
-	for keys in $(arrays.keys snakeHead); do
-		if [[ $(array.get "board" $key) == "$FOOD" ]]; then
-			return 0;
-		fi
-	done
-
-	return 1;
-}
-
 snake.trace() {
 	local stage=$1
 
