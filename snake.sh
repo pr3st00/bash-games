@@ -17,11 +17,11 @@
 . ./subs/logging.sh
 
 main() {
-	screen.hide_cursor
-	game_loop &
-	read_input $!
-	game_over
-	screen.restore_cursor
+	screen.cursor.hide
+	game.loop &
+	game.read.input $!
+	game.over
+	screen.cursor.restore
 }
 
 main "$@"

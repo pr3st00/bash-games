@@ -129,24 +129,4 @@ array.copy() {
 	done
 }
 
-array.rowContains() {
-	local array 
-	local row value key
-
-	array=$1
-	row=$2
-	value=$3
-
-	local -n map=${array}_MAP
-	local -n order=${array}_ORDER
-
-	for key in $(array.keys $array); do
-		if [[ $key == *"${row},"* && ${map[$key]} == *"$value"* ]]; then
-			return 0;
-		fi
-	done
-
-	return 1;
-}
-
 # EOF

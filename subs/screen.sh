@@ -31,13 +31,13 @@ screen.refresh() {
 	trace "Refresh completed"
 }
 
-screen.restore_cursor() {
+screen.cursor.restore() {
         echo -e "\033[?25h"
         stty echo
         clear
 }
 
-screen.hide_cursor() {
+screen.cursor.hide() {
         clear
         stty -echo
         echo -e "\033[?25l"

@@ -2,7 +2,6 @@
 SPEED=10
 DIRECTION=D
 INITIAL_FOOD=3
-SCORE=0
 
 # Signals
 SIG_UP=USR1
@@ -19,7 +18,7 @@ prohibitedMoves["D"]="U";
 prohibitedMoves["L"]="R";
 prohibitedMoves["R"]="L";
 
-change_direction() {
+game.change.direction() {
 	local direction=$1
 	trace2 "Changing direction to [$direction]"
 
@@ -31,15 +30,15 @@ change_direction() {
 	DIRECTION="$direction"
 }
 
-handle_signals() {
-	trap "change_direction U" $SIG_UP
-	trap "change_direction R" $SIG_RIGHT
-	trap "change_direction D" $SIG_DOWN
-	trap "change_direction L" $SIG_LEFT
+game.handle.signals() {
+	trap "game.change.direction U" $SIG_UP
+	trap "game.change.direction R" $SIG_RIGHT
+	trap "game.change.direction D" $SIG_DOWN
+	trap "game.change.direction L" $SIG_LEFT
 	trap "exit 1;"		  $SIG_QUIT
 }
 
-read_input() {
+game.read.input() {
 	local key game_pid
 
 	game_pid=$1
@@ -69,7 +68,7 @@ read_input() {
 	done
 }
 
-colision_detection() {
+game.colision.detection() {
 	local x y
 	local key i
 
@@ -102,17 +101,18 @@ colision_detection() {
 	return 1
 }
 
-game_over() {
+game.over() {
 	clear
+	local score=$(score.get)
 	screen.echoAt "${TEXT_COLOR}     GAME OVER     ${NO_COLOR}" $((COLS/2-10)) $((ROWS/2))
-	screen.echoAt "${TEXT_COLOR}   SCORE: $SCORE   ${NO_COLOR}" $((COLS/2-10)) $((ROWS/2 + 1))
+	screen.echoAt "${TEXT_COLOR}   SCORE: $score   ${NO_COLOR}" $((COLS/2-10)) $((ROWS/2 + 1))
 	screen.echoAt "${TEXT_COLOR} (press enter key) ${NO_COLOR}" $((COLS/2-10)) $((ROWS/2 + 2))
 	read -s 
 	clear
 }
 
-game_loop() {
-	handle_signals
+game.loop() {
+	game.handle.signals
 
 	snake.initialize
 	board.initialize
@@ -126,7 +126,7 @@ game_loop() {
 		score.refresh
 		snake.move
 
-		if colision_detection; then
+		if game.colision.detection; then
 			kill -$SIG_DEAD	$$
 			return 0
 		fi
