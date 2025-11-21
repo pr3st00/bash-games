@@ -8,7 +8,7 @@ score.refresh() {
 	trace "Refreshing score"
         trace2 "Current score is $SCORE"
 
-	screen.echoAt "${TEXT_COLOR} SCORE: $(score.get) ${NO_COLOR}" $((DELTA_X + 1)) $((DELTA_Y - 1)) 
+	screen.echoAt "${TEXT_COLOR} SCORE: $(score.get) - TIME: $SECONDS ${NO_COLOR}" $((DELTA_X + 1)) $((DELTA_Y - 1)) 
 
 	trace "Refresh completed"
 }
