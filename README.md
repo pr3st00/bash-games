@@ -4,7 +4,7 @@
 A snake game written purely using bash.
 </p>
 
-<img width="637" height="765" alt="snake" src="https://github.com/user-attachments/assets/64e543d9-4b9e-4524-9240-7c3d88d142b5" />
+<img width="626" height="758" alt="snake" src="https://github.com/user-attachments/assets/44638ec8-2e81-4b9e-83db-b07aec56c620" />
 
 ## How run
 
