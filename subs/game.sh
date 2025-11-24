@@ -94,7 +94,7 @@ game.collision.detection() {
 
 	# Does our head overlaps with our tail after movement?
 	if [[ $(array.get "board" "$x,$y") == "$SNAKE_TAIL" ]]; then
-		trace2 "Collision detected for [$x,$y]" && sleep 5
+		trace2 "Collision detected for [$x,$y]"
 		return 0
 	fi
 
