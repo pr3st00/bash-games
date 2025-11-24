@@ -69,8 +69,7 @@ game.read.input() {
 }
 
 game.colision.detection() {
-	local x y
-	local key i
+	local x y key
 
 	trace "Running colision detection"
 

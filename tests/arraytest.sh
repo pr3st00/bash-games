@@ -71,20 +71,4 @@ echo
 pause
 clear
 
-clear
-echo "Testing array.rowContains"
-
-for value in nonExistent thirdValue
-	do
-		echo
-		echo "VALUE: $value"
-		if array.rowContains myArray 1 "$value"; then
-		echo "Array contains $value"
-	else
-		echo "Array DOES NOT contain $value"
-	fi
-done
-pause
-clear
-
 # EOF

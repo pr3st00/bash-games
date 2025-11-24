@@ -15,12 +15,9 @@ array.keys.sorted() {
 }
 
 array.add() {
-	local array
-	local key value
-
-	array=$1
-	key=$2
-	value=$3
+	local array=$1
+	local key=$2
+	local value=$3
 
 	declare -gA "${array}_MAP"
 	declare -ga "${array}_ORDER"
@@ -36,21 +33,19 @@ array.add() {
 }
 
 array.remove() {
-	local array 
-	local key returnValue
+	local array=$1
+	local key=$2
+	local returnValue=$3
 	
-	array=$1
-	key=$2
-	returnValue=$3
-
 	local -n map=${array}_MAP
 	local -n order=${array}_ORDER
-	
 
 	local new_array=()
+
 	for thisKey in "${order[@]}"; do
 		[[ "$thisKey" != "$key" ]] && new_array+=("$thisKey")
 	done
+
 	order=("${new_array[@]}")
 
 	unset map[$key];
@@ -60,30 +55,35 @@ array.remove() {
 	fi
 }
 
-array.get() {
-	local array key
-	
-	array=$1
-	key=$2
+array.remove.by.number() {
+	local array=$1
+	local index=$2
+	local returnValue=$3
 
-	local -n map=${array}_MAP
-
-	echo ${map["$key"]};
-}
-
-array.remove.last() {
-	local array
-	local keyList key
-
-	array=$1
-	returnValue=$2
+	local element
 
 	local -n map=${array}_MAP
 	local -n order=${array}_ORDER
 
-        lastElement=${order[0]};
+        element=${order[$index]};
 
-        array.remove $array $lastElement $returnValue
+        array.remove $array $element $returnValue
+}
+
+array.remove.last() {
+	local array=$1
+	local returnValue=$2
+
+        array.remove.by.number $array 0 $returnValue
+}
+
+array.get() {
+	local array=$1 
+	local key=$2
+	
+	local -n map=${array}_MAP
+
+	echo ${map["$key"]};
 }
 
 array.print() {
@@ -119,6 +119,7 @@ array.print.sorted() {
 array.copy() {
 	local source=$1
 	local dest=$2
+
 	local key
 
 	local -n map=${source}_MAP

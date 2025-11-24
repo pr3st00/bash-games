@@ -11,10 +11,11 @@ WORKERS=10
 screen.refresh() {
 	trace "Refreshing screen with $WORKERS workers"
 
-        local CHUNK_SIZE=$(( (${#changedCells[@]} + WORKERS - 1) / WORKERS ))
+	local i key value chunk
+        local chunk_size=$(( (${#changedCells[@]} + WORKERS - 1) / WORKERS ))
 
-        for ((i=0; i<${#changedCells[@]}; i+=CHUNK_SIZE)); do
-                chunk=("${changedCells[@]:i:CHUNK_SIZE}")
+        for ((i=0; i<${#changedCells[@]}; i+=chunk_size)); do
+                chunk=("${changedCells[@]:i:chunk_size}")
                 (
                 for key in "${chunk[@]}"
                 do

@@ -22,7 +22,7 @@ declare -a changedCells
 board.initialize() {
 	timer_start "board.initialize"
 
-	local x y value
+	local x y
 	
 	trace "Initializing board"
 	changedCells=()
@@ -63,7 +63,6 @@ board.initialize() {
 
 board.draw() {
 	timer_start "board.draw"
-	local rowValue
 
 	trace "Drawing board"
 	
@@ -76,6 +75,8 @@ board.draw() {
 }
 
 board.debug() {
+	local x y value
+
 	for ((y=1;y<=ROWS;y++))
 	do
 		for ((x=1;x<=COLS;x++))
