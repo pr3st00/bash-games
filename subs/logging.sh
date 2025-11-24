@@ -31,15 +31,15 @@ timer_stop() {
 }
 
 debug() {
-	test $DEBUG -eq 1 && screen.echoAt "${CLEAR_LINE}$@" 		1 $((ROWS+5)) 
+	test $DEBUG -eq 1 && screen.echoAt "${CLEAR_LINE}[DEBUG] $@" 		1 $((ROWS+4)) 
 }
 
 trace() {
-	test $TRACE -eq 1 && screen.echoAt "${CLEAR_LINE}--> $@" 	1 $((ROWS+4))
+	test $TRACE -eq 1 && screen.echoAt "${CLEAR_LINE}--> $@" 	1 $((ROWS+5))
 }
 
 trace2() {
-	test $TRACE -eq 1 && screen.echoAt "${CLEAR_LINE}----> $@" 	1 $((ROWS+5))
+	test $TRACE -eq 1 && screen.echoAt "${CLEAR_LINE}----> $@" 	1 $((ROWS+6))
 }
 
 # EOF
