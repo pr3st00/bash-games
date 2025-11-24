@@ -6,31 +6,39 @@ FOOD="${FOOD_COLOR}F${NO_COLOR}"
 food.create() {
 	timer_start "food.create"
 
-	local count=$1
-	local x y i
+	local quantity=$1
+	local i
 
-	count=$1
-
-	for ((i=0;i<count;i++)); do
-		x=$(( (RANDOM % ($COLS - 2)) + 2 ))
-		y=$(( (RANDOM % ($ROWS - 2)) + 2 ))
-
-		trace "Adding food at [$x,$y]"
-
-		array.add board "$x,$y" "$FOOD"
-		changedCells+=("$x,$y")
+	for ((i=0;i<quantity;i++)); do
+		food.add
 	done
 
 	timer_stop "food.create"
 }
 
+food.add() {
+	local x y
+
+	x=$(( (RANDOM % ($COLS - 2)) + 2 ))
+	y=$(( (RANDOM % ($ROWS - 2)) + 2 ))
+
+	trace "Adding food at [$x,$y]"
+
+	if [[ ! $(array.get "board" "$x,$y") == "$SNAKE_TAIL" ]]; then
+		array.add board "$x,$y" "$FOOD"
+		changedCells+=("$x,$y")
+
+		return 0
+	else
+		return 1
+	fi
+}
+
 food.eat() {
 	timer_start "food.eat"
 
-	local x y
-
-	x=$1
-	y=$2
+	local x=$1
+	local y=$2
 
 	trace "Eating food"
 

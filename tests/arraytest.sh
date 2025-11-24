@@ -55,6 +55,23 @@ echo
 pause
 clear
 
+echo "Checking if key exists on array"
+echo
+array.print myArray
+echo
+echo
+for key in "8,8" "nonExistingKey"
+do
+	if array.key.exists myArray $key; then
+		echo "Key $key exists"
+	else
+		echo "Key $key does not exist"
+	fi
+done
+echo
+pause
+clear
+
 echo "Removing first element from array"
 echo
 array.remove myArray "8,8"
@@ -63,9 +80,9 @@ echo
 pause
 clear
 
-echo "Removing last element from array"
+echo "Removing oldest element from array"
 echo
-array.remove.last myArray
+array.remove.first myArray
 array.print myArray
 echo
 pause

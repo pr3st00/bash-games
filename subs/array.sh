@@ -14,6 +14,16 @@ array.keys.sorted() {
   printf "%s\n" ${order[@]} | sort -n
 }
 
+array.key.exists() {
+	local array=$1
+	local key=$2
+
+	declare -gA "${array}_MAP"
+	local -n map=${array}_MAP
+
+	[[ -v map["$key"] ]]
+}
+
 array.add() {
 	local array=$1
 	local key=$2
@@ -65,12 +75,14 @@ array.remove.by.number() {
 	local -n map=${array}_MAP
 	local -n order=${array}_ORDER
 
+	(( index < 0 || index >= ${#order[@]} )) && return 1
+
         element=${order[$index]};
 
         array.remove $array $element $returnValue
 }
 
-array.remove.last() {
+array.remove.first() {
 	local array=$1
 	local returnValue=$2
 

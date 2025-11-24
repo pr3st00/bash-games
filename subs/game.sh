@@ -1,5 +1,6 @@
 # Game parameters
-SPEED=10
+CONSTANT_DELAY=0.05
+SPEED=10	# 0-10 
 DIRECTION=D
 INITIAL_FOOD=3
 
@@ -68,35 +69,35 @@ game.read.input() {
 	done
 }
 
-game.colision.detection() {
+game.collision.detection() {
 	local x y key
 
-	trace "Running colision detection"
+	trace "Running collision detection"
 
 	for key in $(array.keys snakeHead); do
-		x=$(echo $key | cut -d',' -f1)
-		y=$(echo $key | cut -d',' -f2)
+		x=${key%%,*}
+		y=${key#*,}
 	done
 
 	# Have we hit right or left walls?
 	if [[ $x -le 1 || $x -ge $((COLS-1)) ]]; then
-		trace2 "Colision detected for X = $x"
+		trace2 "Collision detected for X = $x"
 		return 0
 	fi
 
 	# Have we hit up or down walls?
 	if [[ $y -le 1 || $y -ge $((ROWS-1)) ]]; then
-		trace2 "Colision detected for Y = $y"
+		trace2 "Collision detected for Y = $y"
 		return 0
 	fi
 
 	# Does our head overlaps with our tail after movement?
 	if [[ $(array.get "board" "$x,$y") == "$SNAKE_TAIL" ]]; then
-		trace2 "Colision detected for [$x,$y]" && sleep 5
+		trace2 "Collision detected for [$x,$y]" && sleep 5
 		return 0
 	fi
 
-	trace2 "No colision detected for [$x,$y]"
+	trace2 "No collision detected for [$x,$y]"
 	return 1
 }
 
@@ -125,13 +126,14 @@ game.loop() {
 		score.refresh
 		snake.move
 
-		if game.colision.detection; then
+		if game.collision.detection; then
 			kill -$SIG_DEAD	$$
-			return 0
+			return 1
 		fi
 
 		board.draw
-		sleep $((10-$SPEED));
+		#sleep $(( CONSTANT_DELAY/10 + (10-SPEED) ))
+		sleep $CONSTANT_DELAY
 
 		timer_stop "game_loop"		
 	done

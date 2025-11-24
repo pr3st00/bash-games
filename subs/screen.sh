@@ -22,12 +22,15 @@ screen.refresh() {
                         value=$(array.get "board" "$key")
                         [[ $value == "$BLANK" ]] && value=" ";
 
-			x=$(($(echo $key | cut -d',' -f1)+DELTA_X))
-			y=$(($(echo $key | cut -d',' -f2)+DELTA_Y))
+			x=$((${key%%,*} + DELTA_X))
+			y=$((${key#*,}  + DELTA_Y))
+
                         debug "Drawing character [$value] at position $x $y - changedCell = $key"
                         screen.echoAt "$value" $x $y
                 done ) &
         done
+
+	wait
 	
 	trace "Refresh completed"
 }

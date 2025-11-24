@@ -4,6 +4,10 @@ TRACE=0
 TIMING=0
 TIMER=0
 
+trace.enabled() {
+	[[ $TRACE -eq 1 ]]
+}
+
 timer_start() {
 	if [[ $TIMING -eq 0 ]]; then
 		return

@@ -26,8 +26,8 @@ snake.move() {
 
 	# 1. Move head to the selected direction
 	for key in $(array.keys snakeHead); do
-		x=$(echo $key | cut -d',' -f1)
-		y=$(echo $key | cut -d',' -f2)
+		x=${key%%,*}
+		y=${key#*,}
 	done
 
 	array.remove	snakeHead "$x,$y"
@@ -42,7 +42,7 @@ snake.move() {
 		D) ((y++));;
 		*) ;;
 	esac
-	
+		
 	trace2 "Moving snakeHead to $x $y"
 	array.add snakeHead "$x,$y" "$SNAKE_HEAD"
 	changedCells+=("$x,$y")
@@ -54,9 +54,9 @@ snake.move() {
 		food.create 1
 	else
 		# 2. Move
-		trace2 "Removing snakeTail last element"
-		removedKey=$(array.remove.last snakeTail 1)
-		array.remove.last snakeTail
+		trace2 "Removing snakeTail oldest element"
+		removedKey=$(array.remove.first snakeTail 1)
+		array.remove.first snakeTail
 		trace2 "Element to be removed: $removedKey"
 
 		array.add "board" "$removedKey" "$BLANK"
@@ -71,8 +71,10 @@ snake.move() {
 snake.trace() {
 	local stage=$1
 
-	trace2 "\n\nSNAKE HEAD ($stage): \n\n $(array.print.sorted snakeHead)" 
-	trace2 "\n\nSNAKE TAIL ($stage): \n\n $(array.print.sorted snakeTail)"
+	if trace.enabled; then
+		trace2 "\n\nSNAKE HEAD ($stage): \n\n $(array.print.sorted snakeHead)" 
+		trace2 "\n\nSNAKE TAIL ($stage): \n\n $(array.print.sorted snakeTail)"
+	fi
 }
 
 # EOF
