@@ -1,6 +1,7 @@
 # Game parameters
 CONSTANT_DELAY=0.05
-SPEED=10	# 0-10 
+# 0 -> 10
+SPEED=10
 DIRECTION=D
 INITIAL_FOOD=3
 
@@ -132,8 +133,8 @@ game.loop() {
 		fi
 
 		board.draw
-		#sleep $(( CONSTANT_DELAY/10 + (10-SPEED) ))
-		sleep $CONSTANT_DELAY
+		sleep $(bc <<< "$CONSTANT_DELAY + (10-$SPEED)/10")
+		#sleep $CONSTANT_DELAY
 
 		timer_stop "game_loop"		
 	done
