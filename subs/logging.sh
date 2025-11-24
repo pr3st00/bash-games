@@ -1,8 +1,10 @@
 # Logging parameters
 DEBUG=0
-TRACE=0
+TRACE=1
 TIMING=0
 TIMER=0
+
+CLEAR_LINE="\e[2K"
 
 trace.enabled() {
 	[[ $TRACE -eq 1 ]]
@@ -29,15 +31,15 @@ timer_stop() {
 }
 
 debug() {
-	test $DEBUG -eq 1 && screen.echoAt "$@							" 1 $((ROWS+5)) 
+	test $DEBUG -eq 1 && screen.echoAt "${CLEAR_LINE}$@" 		1 $((ROWS+5)) 
 }
 
 trace() {
-	test $TRACE -eq 1 && screen.echoAt "--> $@						" 1 $((ROWS+3))
+	test $TRACE -eq 1 && screen.echoAt "${CLEAR_LINE}--> $@" 	1 $((ROWS+4))
 }
 
 trace2() {
-	test $TRACE -eq 1 && screen.echoAt "----> $@						" 1 $((ROWS+4))
+	test $TRACE -eq 1 && screen.echoAt "${CLEAR_LINE}----> $@" 	1 $((ROWS+5))
 }
 
 # EOF

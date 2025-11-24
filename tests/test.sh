@@ -25,7 +25,6 @@ clear
 echo "Testing echoAt '|' at position 10 4"
 screen.echoAt "|" 10 4
 pause
-clear
 
 clear
 echo "Testing board initialization"
@@ -33,13 +32,25 @@ pause
 board.initialize
 array.print.sorted board
 pause
-clear
 
+clear
 echo "Testing board drawing"
 pause
 clear
 board.draw
 pause
+
+clear
+echo "Testing adding food"
+pause
+clear
+for ((i=0;i<10;i++)); do
+	food.create 1
+	board.draw
+	sleep .5
+done
+pause
+
 clear
 
 # EOF
