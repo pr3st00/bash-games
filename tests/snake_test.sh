@@ -2,12 +2,12 @@
 
 . ../subs/array.sh
 . ../subs/board.sh
-. ../subs/snake.sh
-. ../subs/food.sh
-. ../subs/game.sh
 . ../subs/screen.sh
-
 . ../subs/logging.sh
+
+. ../subs/snake/snake.sh
+. ../subs/snake/food.sh
+. ../subs/snake/game.sh
 
 TRACE=1
 
