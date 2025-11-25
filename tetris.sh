@@ -6,15 +6,14 @@
 # Author: Fernando Costa de Almeida
 #
 
-. ./subs/array.sh
-. ./subs/board.sh
-. ./subs/screen.sh
-. ./subs/logging.sh
+. ../subs/array.sh
+. ../subs/board.sh
+. ../subs/screen.sh
+. ../subs/score.sh
 
-. ./subs/snake/snake.sh
-. ./subs/snake/food.sh
-. ./subs/snake/game.sh
-. ./subs/snake/score.sh
+. ./game.sh
+
+. ../subs/logging.sh
 
 main() {
 	screen.cursor.hide
