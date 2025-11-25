@@ -118,6 +118,7 @@ game.loop() {
 	snake.initialize
 	board.initialize
 	food.create $INITIAL_FOOD
+	snake.add.board
 	board.draw
 	
 	while (true); do
@@ -132,9 +133,9 @@ game.loop() {
 			return 1
 		fi
 
+		snake.add.board
 		board.draw
 		sleep $(bc <<< "$CONSTANT_DELAY + (10-$SPEED)/10")
-		#sleep $CONSTANT_DELAY
 
 		timer_stop "game_loop"		
 	done

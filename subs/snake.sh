@@ -68,6 +68,11 @@ snake.move() {
 	timer_stop "snake.move"
 }
 
+snake.add.board() {
+        array.copy "snakeHead" "board"
+        array.copy "snakeTail" "board"
+}
+
 snake.trace() {
 	local stage=$1
 

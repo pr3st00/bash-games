@@ -66,9 +66,6 @@ board.draw() {
 
 	trace "Drawing board"
 	
-	array.copy "snakeHead" "board"
-	array.copy "snakeTail" "board"
-
 	screen.refresh
 
 	timer_stop "board.draw"
