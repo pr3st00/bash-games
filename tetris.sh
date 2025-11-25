@@ -6,14 +6,15 @@
 # Author: Fernando Costa de Almeida
 #
 
-. ../subs/array.sh
-. ../subs/board.sh
-. ../subs/screen.sh
-. ../subs/score.sh
+. ./subs/array.sh
+. ./subs/board.sh
+. ./subs/screen.sh
+. ./subs/logging.sh
 
-. ./game.sh
+. ./subs/tetris/score.sh
+. ./subs/tetris/piece.sh
+. ./subs/tetris/game.sh
 
-. ../subs/logging.sh
 
 main() {
 	screen.cursor.hide
