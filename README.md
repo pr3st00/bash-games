@@ -1,4 +1,4 @@
-<h1>Bash Snake</h1>
+<h1>Bash Games</h1>
 
 <p>
 A snake game written purely using bash.
