@@ -61,7 +61,7 @@ array.remove() {
 	unset map[$key];
 
 	if [[ $returnValue == "1" ]]; then
-		echo "$key"
+		printf "%s\n" "$key"
 	fi
 }
 

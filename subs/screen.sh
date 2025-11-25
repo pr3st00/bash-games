@@ -36,7 +36,7 @@ screen.refresh() {
 }
 
 screen.cursor.restore() {
-        echo -e "\033[?25h"
+        printf "\033[?25h"
         stty echo
         clear
 }
@@ -44,7 +44,7 @@ screen.cursor.restore() {
 screen.cursor.hide() {
         clear
         stty -echo
-        echo -e "\033[?25l"
+        printf "\033[?25l"
 }
 
 screen.echoAt() {
@@ -55,12 +55,12 @@ screen.echoAt() {
         x=$2
         y=$3
 
-        echo -e "\033[${y};${x}H$mesg"
+        printf "\033[${y};${x}H$mesg"
         timer_stop "echoAt"
 }
 
 screen.bip() {
-	echo -ne '\a';
+	printf '\a';
 }
 
 # EOF
