@@ -46,6 +46,14 @@ echo
 pause
 clear
 
+echo "Retrieving element with key [8,8]"
+echo
+curValue=$(array.get "myArray" "8,8")
+echo "Value for key [8,8] is [$curValue]"
+echo
+pause
+clear
+
 array.copy myArray destArray
 
 echo "Printing copied array"

@@ -2,8 +2,7 @@
 CONSTANT_DELAY=0.05
 # 0 -> 10
 SPEED=10
-DIRECTION=D
-INITIAL_FOOD=3
+DIRECTION=N
 
 # Signals
 SIG_UP=USR1
@@ -15,20 +14,10 @@ SIG_DEAD=HUP
 
 declare -A prohibitedMoves
 
-prohibitedMoves["U"]="D";
-prohibitedMoves["D"]="U";
-prohibitedMoves["L"]="R";
-prohibitedMoves["R"]="L";
-
 game.change.direction() {
 	local direction=$1
 	trace2 "Changing direction to [$direction]"
 
-	if [[ ${prohibitedMoves[$DIRECTION]} == "$direction" ]]; then
-		trace2 "Prohibited Move"
-		return 1
-	fi
-	
 	DIRECTION="$direction"
 }
 
@@ -92,8 +81,8 @@ game.over() {
 game.loop() {
 	game.handle.signals
 
-	piece.initialize
 	board.initialize
+	piece.initialize
 	piece.add.board
 	board.draw
 	
@@ -108,6 +97,7 @@ game.loop() {
 			return 1
 		fi
 
+		piece.move
 		piece.add.board
 		board.draw
 		sleep $(bc <<< "$CONSTANT_DELAY + (10-$SPEED)/10")

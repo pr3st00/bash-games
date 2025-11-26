@@ -30,7 +30,7 @@ clear
 echo "Testing board initialization"
 pause
 board.initialize
-array.print.sorted board
+array.print.sorted board | more
 pause
 
 clear

@@ -1,85 +1,134 @@
 PIECE_COLOR="\e[32;42m"
 NO_COLOR="\e[0m"
 
+DEAD_PIECE="D"
 PIECE="${PIECE_COLOR}P${NO_COLOR}"
 
 piece.initialize() {
 	timer_start "piece.initialize"
 	trace "Initializing piece"
 
-	array.add "piece" "5,5" "$PIECE"
-	array.add "piece" "5,6" "$PIECE"
-	array.add "piece" "6,7" "$PIECE"
-
-	changedCells+=("5,5")
-	changedCells+=("5,6")
-	changedCells+=("5,7")
+	for key in 3,2 3,3 3,4 4,4 5,4; do
+		array.add "piece" "$key" "$PIECE"
+		changedCells+=("$key")
+	done
 
 	timer_stop "piece.initialize"
 }
 
 piece.move() {
-	timer_start "snake.move"
+	timer_start "piece.move"
 	local x y i key
 	local keyList
 
-	trace "Moving snake"
+	trace "Moving piece"
 
-	snake.trace "Initial"
+	piece.trace "Before gravity"
+	piece.gravity
+	piece.trace "After gravity"
 
-	# 1. Move head to the selected direction
-	for key in $(array.keys snakeHead); do
+	piece.trace "Before move"
+	piece.change.direction
+	piece.trace "After move"
+
+	timer_stop "piece.move"
+}
+
+piece.change.direction() {
+        local keys=$(array.keys "piece")
+
+        trace "Performing gravity logic"
+
+        for key in $keys; do
+                x=${key%%,*}
+                y=${key#*,}
+                array.remove    piece "$x,$y"
+                array.add       board "$x,$y" "$BLANK"
+                changedCells+=("$x,$y")
+        done
+
+        for key in $keys; do
+                x=${key%%,*}
+                y=${key#*,}
+
+		case "$DIRECTION" in
+			R) ((x++));;
+			L) ((x--));;
+			U) sleep .3;;
+			D) ((y++));;
+			*) ;;
+		esac
+
+                curValue=$(array.get board "$x,$y")
+                
+		if [[ $curValue == "$DEAD_PIECE" || $x -ge $((COLS -2)) || $x -le 2 ]]; then
+                        trace2 "Colision detected for value [$curValue] at [$x,$y]" && sleep 3
+			unset DIRECTION
+                        return 1;
+                fi
+
+                array.add       piece "$x,$y" "$PIECE"
+                changedCells+=("$x,$y")
+
+        done
+
+	unset DIRECTION
+        return 0
+}
+
+piece.gravity() {
+	local keys=$(array.keys "piece")
+
+	trace "Performing gravity logic"
+
+	for key in $keys; do
 		x=${key%%,*}
 		y=${key#*,}
+		((y++))
+		curValue=$(array.get board "$x,$y")
+		if [[ $curValue == "$DEAD_PIECE" || $y -ge $ROWS ]]; then
+			trace2 "Colision detected for value [$curValue] at [$x,$y]" && sleep 3
+			return 1;
+		fi
 	done
 
-	array.remove	snakeHead "$x,$y"
-	array.add	snakeTail "$x,$y" "$SNAKE_TAIL"
+	for key in $keys; do
+		x=${key%%,*}
+		y=${key#*,}
+		array.remove	piece "$x,$y"
+		array.add	board "$x,$y" "$BLANK"
+		changedCells+=("$x,$y")
+	done
 
-	snake.trace "After head movement"
-	
-	case "$DIRECTION" in
-		R) ((x++));;
-		L) ((x--));;
-		U) ((y--));;
-		D) ((y++));;
-		*) ;;
-	esac
-		
-	trace2 "Moving snakeHead to $x $y"
-	array.add snakeHead "$x,$y" "$SNAKE_HEAD"
-	changedCells+=("$x,$y")
+	for key in $keys; do
+		x=${key%%,*}
+		y=${key#*,}
+		((y++))
+		array.add	piece "$x,$y" "$PIECE"
+		changedCells+=("$x,$y")
+	done
 
-	snake.trace "New Head"
+	return 0
+}
 
-	if [[ $(array.get "board" "$x,$y") == "$FOOD" ]]; then
-		food.eat "$x,$y"
-		food.create 1
-	else
-		# 2. Move
-		trace2 "Removing snakeTail oldest element"
-		removedKey=$(array.remove.first snakeTail 1)
-		array.remove.first snakeTail
-		trace2 "Element to be removed: $removedKey"
-
-		array.add "board" "$removedKey" "$BLANK"
-		changedCells+=("$removedKey")
-	fi
-
-	snake.trace "Final"
-
-	timer_stop "snake.move"
+piece.colision.detection() {
+	sleep 1
 }
 
 piece.add.board() {
         array.copy "piece" "board"
 
-	changedCells+=("5,5")
-	changedCells+=("5,6")
-	changedCells+=("6,6")
-	changedCells+=("5,5")
-	changedCells+=("5,6")
-	changedCells+=("5,7")
+	for key in $(array.keys "piece"); do
+		changedCells+=("$key")
+	done
+}
+
+piece.trace() {
+        local stage=$1
+
+        if trace.enabled; then
+                trace2 "\n\nPIECE ($stage): \n\n $(array.print.sorted piece)" && sleep 1
+        fi
 }
 
 # EOF

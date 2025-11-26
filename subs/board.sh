@@ -79,7 +79,7 @@ board.debug() {
 		for ((x=1;x<=COLS;x++))
 		do
 			value=$(array.get "board" "$x,$y")
-			printf "%s" "$x,$y -> $value, "
+			printf "%s" "[$x,$y] -> [$value], "
 		done
 		echo 
 	done

@@ -105,7 +105,7 @@ array.print() {
 	for key in $(array.keys $array); do
 		((n++))
 		value=$(array.get "$array" "$key")
-        	printf "%s" "$key => $value 	"
+        	printf "%s" "[$key] => [$value]  "
 		if [[ $n -gt $MAXROWS ]]; then
 			printf "\n"
 			n=0
@@ -120,7 +120,7 @@ array.print.sorted() {
 	for key in $(array.keys.sorted $array); do
 		((n++))
 		value=$(array.get "$array" "$key")
-        	printf "%s" "$key => $value 	"
+        	printf "%s" "[$key] => [$value]  "
 		if [[ $n -gt $MAXROWS ]]; then
 			printf "\n"
 			n=0
