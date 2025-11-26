@@ -18,6 +18,11 @@ game.change.direction() {
 	local direction=$1
 	trace2 "Changing direction to [$direction]"
 
+	if piece.still.moving; then
+		trace2 "Not changing direction cause the piece is still moving"
+		return 1
+	fi
+
 	DIRECTION="$direction"
 }
 
@@ -63,8 +68,8 @@ game.collision.detection() {
 	local x y key
 
 	trace "Running collision detection"
-
 	trace2 "No collision detected for [$x,$y]"
+
 	return 1
 }
 
@@ -99,7 +104,9 @@ game.loop() {
 
 		piece.move
 		piece.add.board
+
 		board.draw
+
 		sleep $(bc <<< "$CONSTANT_DELAY + (10-$SPEED)/10")
 
 		timer_stop "game_loop"		

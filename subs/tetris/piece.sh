@@ -4,22 +4,27 @@ NO_COLOR="\e[0m"
 DEAD_PIECE="D"
 PIECE="${PIECE_COLOR}P${NO_COLOR}"
 
+PIECE_STATUS="IDLE"
+
 piece.initialize() {
 	timer_start "piece.initialize"
 	trace "Initializing piece"
 
 	for key in 3,2 3,3 3,4 4,4 5,4; do
 		array.add "piece" "$key" "$PIECE"
-		changedCells+=("$key")
 	done
+
+	piece.add.to.changed "piece"
 
 	timer_stop "piece.initialize"
 }
 
+piece.still.moving() {
+	[[ $PIECE_STATUS == "MOVING" ]]
+}
+
 piece.move() {
 	timer_start "piece.move"
-	local x y i key
-	local keyList
 
 	trace "Moving piece"
 
@@ -34,18 +39,28 @@ piece.move() {
 	timer_stop "piece.move"
 }
 
+piece.remove.from.board() {
+	local name=$1
+
+        local keys=$(array.keys "$name")
+
+        for key in $keys; do
+                x=${key%%,*}
+                y=${key#*,}
+                array.remove    $name "$x,$y"
+                array.add       board "$x,$y" "$BLANK"
+                changedCells+=("$x,$y")
+        done
+}
+
 piece.change.direction() {
         local keys=$(array.keys "piece")
 
         trace "Performing gravity logic"
 
-        for key in $keys; do
-                x=${key%%,*}
-                y=${key#*,}
-                array.remove    piece "$x,$y"
-                array.add       board "$x,$y" "$BLANK"
-                changedCells+=("$x,$y")
-        done
+	PIECE_STATUS="MOVING"
+
+	piece.remove.from.board "piece"
 
         for key in $keys; do
                 x=${key%%,*}
@@ -67,12 +82,15 @@ piece.change.direction() {
                         return 1;
                 fi
 
-                array.add       piece "$x,$y" "$PIECE"
-                changedCells+=("$x,$y")
-
+                array.add "piece" "$x,$y" "$PIECE"
         done
 
+	piece.add.to.changed "piece"
+
 	unset DIRECTION
+
+	PIECE_STATUS="IDLE"
+
         return 0
 }
 
@@ -92,21 +110,16 @@ piece.gravity() {
 		fi
 	done
 
-	for key in $keys; do
-		x=${key%%,*}
-		y=${key#*,}
-		array.remove	piece "$x,$y"
-		array.add	board "$x,$y" "$BLANK"
-		changedCells+=("$x,$y")
-	done
+	piece.remove.from.board "piece"
 
 	for key in $keys; do
 		x=${key%%,*}
 		y=${key#*,}
 		((y++))
-		array.add	piece "$x,$y" "$PIECE"
-		changedCells+=("$x,$y")
+		array.add	"piece" "$x,$y" "$PIECE"
 	done
+
+	piece.add.to.changed "piece"
 
 	return 0
 }
@@ -117,8 +130,13 @@ piece.colision.detection() {
 
 piece.add.board() {
         array.copy "piece" "board"
+	piece.add.to.changed "piece"
+}
 
-	for key in $(array.keys "piece"); do
+piece.add.to.changed() {
+	local name=$1
+
+	for key in $(array.keys "$name"); do
 		changedCells+=("$key")
 	done
 }
