@@ -1,8 +1,9 @@
 # Game parameters
-CONSTANT_DELAY=0.05
+CONSTANT_DELAY=0.1
 # 0 -> 10
 SPEED=10
 DIRECTION=N
+GRAVITY_FRAME_SKIP=3
 
 # Signals
 SIG_UP=USR1
@@ -64,12 +65,7 @@ game.read.input() {
 	done
 }
 
-game.collision.detection() {
-	local x y key
-
-	trace "Running collision detection"
-	trace2 "No collision detected for [$x,$y]"
-
+game.is.over() {
 	return 1
 }
 
@@ -90,16 +86,23 @@ game.loop() {
 	piece.initialize
 	piece.add.board
 	board.draw
+
+	local frame=0
 	
 	while (true); do
 		timer_start "game_loop"
 		changedCells=()
+		((frame++))
 
 		score.refresh
 
-		if game.collision.detection; then
+		if game.is.over; then
 			kill -$SIG_DEAD	$$
 			return 1
+		fi
+
+		if [[ $((frame % $GRAVITY_FRAME_SKIP)) == 0 ]]; then
+			piece.gravity
 		fi
 
 		piece.move

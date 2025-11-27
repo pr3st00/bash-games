@@ -1,10 +1,16 @@
 PIECE_COLOR="\e[32;42m"
-NO_COLOR="\e[0m"
-
-DEAD_PIECE="D"
 PIECE="${PIECE_COLOR}P${NO_COLOR}"
 
+DEAD_PIECE_COLOR="\e[32;44m"
+DEAD_PIECE="${DEAD_PIECE_COLOR} ${NO_COLOR}"
+
 PIECE_STATUS="IDLE"
+
+NO_COLOR="\e[0m"
+
+NO_COLISION_DETECTED=0
+COLISION_DETECTED_X=1
+COLISION_DETECTED_Y=2
 
 piece.initialize() {
 	timer_start "piece.initialize"
@@ -19,6 +25,14 @@ piece.initialize() {
 	timer_stop "piece.initialize"
 }
 
+piece.is.moving() {
+	PIECE_STATUS="MOVING"
+}
+
+piece.stop.moving() {
+	PIECE_STATUS="IDLE"
+}
+
 piece.still.moving() {
 	[[ $PIECE_STATUS == "MOVING" ]]
 }
@@ -27,10 +41,6 @@ piece.move() {
 	timer_start "piece.move"
 
 	trace "Moving piece"
-
-	piece.trace "Before gravity"
-	piece.gravity
-	piece.trace "After gravity"
 
 	piece.trace "Before move"
 	piece.change.direction
@@ -47,8 +57,8 @@ piece.remove.from.board() {
         for key in $keys; do
                 x=${key%%,*}
                 y=${key#*,}
-                array.remove    $name "$x,$y"
-                array.add       board "$x,$y" "$BLANK"
+                array.remove    "$name" "$key"
+                array.add       "board" "$x,$y" "$BLANK"
                 changedCells+=("$x,$y")
         done
 }
@@ -58,7 +68,15 @@ piece.change.direction() {
 
         trace "Performing gravity logic"
 
-	PIECE_STATUS="MOVING"
+	piece.is.moving
+
+	piece.colision.detection "piece"
+
+	if [[ $? == "$COLISION_DETECTED_X" ]]; then
+		unset DIRECTION
+		piece.stop.moving
+		return 1
+	fi
 
 	piece.remove.from.board "piece"
 
@@ -70,26 +88,18 @@ piece.change.direction() {
 			R) ((x++));;
 			L) ((x--));;
 			U) sleep .3;;
-			D) ((y++));;
+			#D) ((y++));;
 			*) ;;
 		esac
-
-                curValue=$(array.get board "$x,$y")
-                
-		if [[ $curValue == "$DEAD_PIECE" || $x -ge $((COLS -2)) || $x -le 2 ]]; then
-                        trace2 "Colision detected for value [$curValue] at [$x,$y]" && sleep 3
-			unset DIRECTION
-                        return 1;
-                fi
 
                 array.add "piece" "$x,$y" "$PIECE"
         done
 
 	piece.add.to.changed "piece"
 
-	unset DIRECTION
+	piece.stop.moving
 
-	PIECE_STATUS="IDLE"
+	unset DIRECTION
 
         return 0
 }
@@ -99,16 +109,16 @@ piece.gravity() {
 
 	trace "Performing gravity logic"
 
-	for key in $keys; do
-		x=${key%%,*}
-		y=${key#*,}
-		((y++))
-		curValue=$(array.get board "$x,$y")
-		if [[ $curValue == "$DEAD_PIECE" || $y -ge $ROWS ]]; then
-			trace2 "Colision detected for value [$curValue] at [$x,$y]" && sleep 3
-			return 1;
-		fi
-	done
+	piece.trace "Before gravity"
+
+	piece.colision.detection "piece"
+
+	if [[ $? == "$COLISION_DETECTED_Y" ]]; then
+		trace2 "cucucucu" && sleep 10
+		piece.kill "piece"
+		piece.initialize
+		return 1;
+	fi
 
 	piece.remove.from.board "piece"
 
@@ -116,16 +126,50 @@ piece.gravity() {
 		x=${key%%,*}
 		y=${key#*,}
 		((y++))
-		array.add	"piece" "$x,$y" "$PIECE"
+		array.add "piece" "$x,$y" "$PIECE"
 	done
 
 	piece.add.to.changed "piece"
+
+	piece.trace "After gravity"
 
 	return 0
 }
 
 piece.colision.detection() {
-	sleep 1
+	local name=$1
+	local result=$NO_COLISION_DETECTED
+
+	local keys=$(array.keys "$name")
+
+        for key in $keys; do
+                x=${key%%,*}
+                y=${key#*,}
+
+                case "$DIRECTION" in
+                        R) ((x++));;
+                        L) ((x--));;
+                        U) sleep .1;;
+                        D) ((y++));;
+                        *) ;;
+                esac
+
+		if [[ $x -le 1 || $x -ge $((COLS)) ]]; then
+                        trace2 "Colision detected for value [$curValue] at [$x,$y]" && sleep 1
+                        result=$COLISION_DETECTED_X;
+			break;
+                fi
+
+                curValue=$(array.get "board" "$x,$y")
+
+		if [[ $curValue == "$DEAD_PIECE" || $y -ge $((ROWS - 1)) ]]; then
+                        trace2 "Colision detected for value [$curValue] at [$x,$y]" && sleep 1
+                        result=$COLISION_DETECTED_Y;
+			break;
+                fi
+        done
+
+	return $result
 }
 
 piece.add.board() {
@@ -145,8 +189,22 @@ piece.trace() {
         local stage=$1
 
         if trace.enabled; then
-                trace2 "\n\nPIECE ($stage): \n\n $(array.print.sorted piece)" && sleep 1
+                trace2 "\n\nPIECE ($stage): \n\n $(array.print.sorted piece)"
         fi
+}
+
+piece.kill() {
+	local name=$1
+
+	local keys=$(array.keys "$name")
+
+	piece.add.to.changed 	"$name"
+	piece.remove.from.board "$name"
+	array.kill "$name"
+
+	for key in $keys; do
+		array.add 	"board" "$key" "$DEAD_PIECE"
+	done
 }
 
 # EOF

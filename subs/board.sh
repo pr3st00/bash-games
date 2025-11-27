@@ -1,5 +1,5 @@
 # Board parameters
-COLS=50
+COLS=30
 ROWS=30
 
 BORDER_COLOR="\e[30;43m"

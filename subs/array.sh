@@ -24,6 +24,19 @@ array.key.exists() {
 	[[ -v map["$key"] ]]
 }
 
+array.kill() {
+	local array=$1
+
+	declare -gA "${array}_MAP"
+	declare -ga "${array}_ORDER"
+
+	local -n map=${array}_MAP
+	local -n order=${array}_ORDER
+
+	unset map[$key]
+	unset order[$key]
+}
+
 array.add() {
 	local array=$1
 	local key=$2
