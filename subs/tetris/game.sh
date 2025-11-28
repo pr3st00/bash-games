@@ -66,7 +66,15 @@ game.read.input() {
 }
 
 game.is.over() {
-	return 1
+	local keys=$(array.keys "board")
+	local x
+	local result=1
+
+	for ((x=1;x<$COLS;x++)); do
+		[[ $(array.get "board" "$x,2") == "$DEAD_PIECE" ]] && result=0
+	done
+
+	return $result
 }
 
 game.over() {

@@ -17,7 +17,9 @@ piece.initialize() {
 	trace "Initializing piece"
 
 	for key in 3,2 3,3 3,4 4,4 5,4; do
-		array.add "piece" "$key" "$PIECE"
+		if [[ $(array.get "board" "$key") != "$DEAD_PIECE" ]]; then
+			array.add "piece" "$key" "$PIECE"
+		fi
 	done
 
 	piece.add.to.changed "piece"
@@ -66,13 +68,16 @@ piece.remove.from.board() {
 piece.change.direction() {
         local keys=$(array.keys "piece")
 
-        trace "Performing gravity logic"
+	trace "Performing direction change logic ($DIRECTION)"
+
+	[[ -z $DIRECTION ]] && return 1
 
 	piece.is.moving
 
 	piece.colision.detection "piece"
+	local result=$?
 
-	if [[ $? == "$COLISION_DETECTED_X" ]]; then
+	if [[ $result == "$COLISION_DETECTED_X" || $result == "$COLISION_DETECTED_Y" ]]; then
 		unset DIRECTION
 		piece.stop.moving
 		return 1
@@ -88,7 +93,7 @@ piece.change.direction() {
 			R) ((x++));;
 			L) ((x--));;
 			U) sleep .3;;
-			#D) ((y++));;
+			D) ((y++));;
 			*) ;;
 		esac
 
@@ -114,7 +119,6 @@ piece.gravity() {
 	piece.colision.detection "piece"
 
 	if [[ $? == "$COLISION_DETECTED_Y" ]]; then
-		trace2 "cucucucu" && sleep 10
 		piece.kill "piece"
 		piece.initialize
 		return 1;
@@ -146,24 +150,24 @@ piece.colision.detection() {
                 x=${key%%,*}
                 y=${key#*,}
 
-                case "$DIRECTION" in
-                        R) ((x++));;
-                        L) ((x--));;
-                        U) sleep .1;;
-                        D) ((y++));;
-                        *) ;;
-                esac
+		case "$DIRECTION" in
+			R) ((x++));;
+			L) ((x--));;
+			U) sleep .3;;
+			D) ((y++));;
+			*) ((y++));;
+		esac
 
 		if [[ $x -le 1 || $x -ge $((COLS)) ]]; then
-                        trace2 "Colision detected for value [$curValue] at [$x,$y]" && sleep 1
+                        trace2 "X Colision detected for value [$curValue] at [$x,$y]" && sleep 1
                         result=$COLISION_DETECTED_X;
 			break;
                 fi
 
                 curValue=$(array.get "board" "$x,$y")
 
-		if [[ $curValue == "$DEAD_PIECE" || $y -ge $((ROWS - 1)) ]]; then
-                        trace2 "Colision detected for value [$curValue] at [$x,$y]" && sleep 1
+		if [[ $curValue == "$DEAD_PIECE" || $y -ge $((ROWS)) ]]; then
+                        trace2 "Y Colision detected for value [$curValue] at [$x,$y]" && sleep 1
                         result=$COLISION_DETECTED_Y;
 			break;
                 fi
