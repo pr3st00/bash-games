@@ -12,11 +12,20 @@ NO_COLISION_DETECTED=0
 COLISION_DETECTED_X=1
 COLISION_DETECTED_Y=2
 
+PIECE[1]="3,2 3,3 3,4 4,4 5,4"
+PIECE[2]="3,2 3,3 4,2 4,3"
+PIECE[3]="3,2 3,3 3,4 3,5 3,6"
+PIECE[4]="3,2 3,3 4,3"
+PIECE[5]="3,2 4,2 5,2 4,3"
+PIECE[6]="3,2 4,2 5,2 4,3 4,4"
+
 piece.initialize() {
 	timer_start "piece.initialize"
 	trace "Initializing piece"
 
-	for key in 3,2 3,3 3,4 4,4 5,4; do
+	local pieceNumber=$(( (RANDOM % 6) + 1 ))
+
+	for key in ${PIECE[$pieceNumber]}; do
 		if [[ $(array.get "board" "$key") != "$DEAD_PIECE" ]]; then
 			array.add "piece" "$key" "$PIECE"
 		fi
