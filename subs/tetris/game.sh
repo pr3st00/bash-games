@@ -3,6 +3,7 @@ CONSTANT_DELAY=0.1
 # 0 -> 10
 SPEED=10
 DIRECTION=N
+ROTATE=N
 GRAVITY_FRAME_SKIP=3
 
 # Signals
@@ -12,6 +13,9 @@ SIG_DOWN=URG
 SIG_LEFT=IO
 SIG_QUIT=WINCH
 SIG_DEAD=HUP
+
+SIG_ROTATE_L=QUIT
+SIG_ROTATE_R=ALRM
 
 declare -A prohibitedMoves
 
@@ -27,11 +31,20 @@ game.change.direction() {
 	DIRECTION="$direction"
 }
 
+game.rotate() {
+	local direction=$1
+	trace2 "Rotating to [$direction]"
+
+	ROTATE="$direction"
+}
+
 game.handle.signals() {
 	trap "game.change.direction U"	$SIG_UP
 	trap "game.change.direction R"	$SIG_RIGHT
 	trap "game.change.direction D"	$SIG_DOWN
 	trap "game.change.direction L"	$SIG_LEFT
+	trap "game.rotate L"		$SIG_ROTATE_L
+	trap "game.rotate R"		$SIG_ROTATE_R
 	trap "exit 1;"		  	$SIG_QUIT
 }
 
@@ -60,6 +73,10 @@ game.read.input() {
 			[aA]) 	kill -$SIG_LEFT		$game_pid
 				;;
 			[dD])	kill -$SIG_RIGHT	$game_pid
+				;;
+			[1])	kill -$SIG_ROTATE_L	$game_pid
+				;;
+			[2])	kill -$SIG_ROTATE_R	$game_pid
 				;;
 		esac
 	done
@@ -113,6 +130,7 @@ game.loop() {
 			piece.gravity
 		fi
 
+		piece.rotate
 		piece.move
 		piece.add.board
 

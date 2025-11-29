@@ -1,6 +1,6 @@
 # Logging parameters
 DEBUG=0
-TRACE=0
+TRACE=1
 TIMING=0
 TIMER=0
 
