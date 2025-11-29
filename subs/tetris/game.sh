@@ -74,9 +74,9 @@ game.read.input() {
 				;;
 			[dD])	kill -$SIG_RIGHT	$game_pid
 				;;
-			[1])	kill -$SIG_ROTATE_L	$game_pid
+			[kK])	kill -$SIG_ROTATE_L	$game_pid
 				;;
-			[2])	kill -$SIG_ROTATE_R	$game_pid
+			[lL])	kill -$SIG_ROTATE_R	$game_pid
 				;;
 		esac
 	done

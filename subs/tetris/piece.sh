@@ -15,33 +15,34 @@ COLISION_DETECTED_Y=2
 # All tetris pieces and their hardcoded rotations to LEFT
 PIECE[1,1]="3,2 3,3 3,4 4,4 5,4"
 PIECE[1,2]="-2,-2 -1,-1 0,0 -1,-1 -2,-2"
-PIECE[1,3]="3,2 3,3 3,4 4,4 5,4"
-PIECE[1,4]="3,2 3,3 3,4 4,4 5,4"
+#PIECE[1,2]="0,0 0,0 0,0 0,0 0,0"
+PIECE[1,3]="0,0 0,0 0,0 0,0 0,0"
+PIECE[1,4]="0,0 0,0 0,0 0,0 0,0"
 
 PIECE[2,1]="3,2 3,3 4,2 4,3"
-PIECE[2,2]="3,2 3,3 4,2 4,3"
-PIECE[2,3]="3,2 3,3 4,2 4,3"
-PIECE[2,4]="3,2 3,3 4,2 4,3"
+PIECE[2,2]="0,0 0,0 0,0 0,0"
+PIECE[2,3]="0,0 0,0 0,0 0,0"
+PIECE[2,4]="0,0 0,0 0,0 0,0"
 
 PIECE[3,1]="3,2 3,3 3,4 3,5 3,6"
-PIECE[3,2]="3,2 3,3 3,4 3,5 3,6"
-PIECE[3,3]="3,2 3,3 3,4 3,5 3,6"
-PIECE[3,4]="3,2 3,3 3,4 3,5 3,6"
+PIECE[3,2]="0,0 0,0 0,0 0,0 0,0"
+PIECE[3,3]="0,0 0,0 0,0 0,0 0,0"
+PIECE[3,4]="0,0 0,0 0,0 0,0 0,0"
 
 PIECE[4,1]="3,2 3,3 4,3"
-PIECE[4,2]="3,2 3,3 4,3"
-PIECE[4,3]="3,2 3,3 4,3"
-PIECE[4,4]="3,2 3,3 4,3"
+PIECE[4,2]="0,0 0,0 0,0"
+PIECE[4,3]="0,0 0,0 0,0"
+PIECE[4,4]="0,0 0,0 0,0"
 
 PIECE[5,1]="3,2 4,2 5,2 4,3"
-PIECE[5,2]="3,2 4,2 5,2 4,3"
-PIECE[5,3]="3,2 4,2 5,2 4,3"
-PIECE[5,4]="3,2 4,2 5,2 4,3"
+PIECE[5,2]="0,0 0,0 0,0 0,0"
+PIECE[5,3]="0,0 0,0 0,0 0,0"
+PIECE[5,4]="0,0 0,0 0,0 0,0"
 
 PIECE[6,1]="3,2 4,2 5,2 4,3 4,4"
-PIECE[6,2]="3,2 4,2 5,2 4,3 4,4"
-PIECE[6,3]="3,2 4,2 5,2 4,3 4,4"
-PIECE[6,4]="3,2 4,2 5,2 4,3 4,4"
+PIECE[6,2]="0,0 0,0 0,0 0,0 0,0"
+PIECE[6,3]="0,0 0,0 0,0 0,0 0,0"
+PIECE[6,4]="0,0 0,0 0,0 0,0 0,0"
 
 piece.initialize() {
 	timer_start "piece.initialize"
@@ -63,30 +64,41 @@ piece.initialize() {
 }
 
 piece.rotate() {
-	[[ -z $ROTATE || $ROTATE == "N" ]] && return 1
+	[[ $ROTATE != "L" && $ROTATE != "R" ]] && return 1
 
 	timer_start "piece.rotate"
 
 	trace "Rotating piece to [$ROTATE]"
 
-	piece.trace "Before rotate" && sleep 1
+	piece.trace "Before rotate" && sleep 2
 
 	local curPieceX=${CUR_PIECE%%,*}
         local curPieceY=${CUR_PIECE#*,}
 	local nextPiece="$curPieceX,$curPieceY"
 
-	if [[ $ROTATE == "L" ]]; then
-		((curPieceY++))
-		if [[ $curPieceY -gt 4 ]]; then
-			curPieceY=1
-		fi
-		nextPiece="$curPieceX,$curPieceY"
+	case "$ROTATE" in
+                        [L])	((curPieceY++))
+				;;
+                        [R])	((curPieceY--))
+				;;
+	esac
+
+	if [[ $curPieceY -gt 4 ]]; then
+		curPieceY=2
+	elif [[ $curPieceY -le 2 ]]; then
+		curPieceY=4
 	fi
+
+	nextPiece="$curPieceX,$curPieceY"
 
 	CUR_PIECE=$nextPiece
 
 	local curKeys=$(array.keys "piece")
-	local keyOps=${PIECE[$nextPiece]}
+	local keyOps=()
+
+	for key in ${PIECE[$nextPiece]}; do
+		keyOps+=("$key")
+	done
 
 	piece.add.to.changed "piece"
 	piece.remove.from.board "piece"
@@ -110,7 +122,7 @@ piece.rotate() {
 
 	piece.add.to.changed "piece"
 
-	piece.trace "After rotate" && sleep 1
+	piece.trace "After rotate" && sleep 2
 
 	unset ROTATE
 
