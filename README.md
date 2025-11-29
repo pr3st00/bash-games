@@ -12,7 +12,7 @@ A snake and a tetris game written purely using bash.
 
 ## How run
 
-bash snake.sh
+bash snake.sh </br>
 bash tetris.sh
 
 ## Available commands
