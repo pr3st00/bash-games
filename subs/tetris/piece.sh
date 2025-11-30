@@ -55,10 +55,10 @@ piece.rotate() {
 				;;
 	esac
 
-	if [[ $curPieceY -gt 4 ]]; then
+	if [[ $curPieceY -gt 5 ]]; then
 		curPieceY=2
 	elif [[ $curPieceY -lt 2 ]]; then
-		curPieceY=4
+		curPieceY=5
 	fi
 
 	nextPiece="$curPieceX,$curPieceY"
