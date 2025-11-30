@@ -96,4 +96,12 @@ echo
 pause
 clear
 
+echo "Killing array"
+echo
+array.kill myArray
+array.print.sorted myArray
+echo
+pause
+clear
+
 # EOF

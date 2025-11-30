@@ -33,8 +33,8 @@ array.kill() {
 	local -n map=${array}_MAP
 	local -n order=${array}_ORDER
 
-	unset map[$key]
-	unset order[$key]
+	unset map
+	unset order
 }
 
 array.add() {

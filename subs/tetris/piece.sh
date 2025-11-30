@@ -19,6 +19,7 @@ piece.initialize() {
 	local key
 
 	local pieceNumber=$(( (RANDOM % 6) + 1 ))
+	local pieceNumber=1
 	CUR_PIECE="$pieceNumber,1"
 
 	for key in ${PIECES["$CUR_PIECE"]}; do
@@ -56,7 +57,7 @@ piece.rotate() {
 
 	if [[ $curPieceY -gt 4 ]]; then
 		curPieceY=2
-	elif [[ $curPieceY -le 2 ]]; then
+	elif [[ $curPieceY -lt 2 ]]; then
 		curPieceY=4
 	fi
 
@@ -74,6 +75,10 @@ piece.rotate() {
 	piece.add.to.changed "piece"
 	piece.remove.from.board "piece"
 
+	piece.kill "piece"
+
+	trace2 "NEXTPIECE = [$nextPiece], KeyOps = [${keyOps[*]}]"
+
 	local i=0
 
 	for key in $curKeys; do
@@ -84,10 +89,12 @@ piece.rotate() {
 		local opx=${ops%%,*}
         	local opy=${ops#*,}
 
-		x=$((x+opx))
-		y=$((y+opy))
+		local newx=$((x+opx))
+		local newy=$((y+opy))
 
-		array.add "piece" "$x,$y" "$PIECE"
+		trace2 "x,y = [$x,$y], opx,opy = [$opx,$opy], newx,newy [$newx,$newy]"
+
+		array.add 	"piece" "$newx,$newy"	"$PIECE"
 
 		((i++))
 	done
@@ -238,7 +245,7 @@ piece.colision.detection() {
 		esac
 
 		if [[ $x -le 1 || $x -ge $((COLS)) ]]; then
-                        trace2 "X Colision detected for value [$curValue] at [$x,$y]" && sleep 1
+                        trace2 "X Colision detected for value [$curValue] at [$x,$y]"
                         result=$COLISION_DETECTED_X;
 			break;
                 fi
@@ -246,7 +253,7 @@ piece.colision.detection() {
                 local curValue=$(array.get "board" "$x,$y")
 
 		if [[ $curValue == "$DEAD_PIECE" || $y -ge $((ROWS)) ]]; then
-                        trace2 "Y Colision detected for value [$curValue] at [$x,$y]" && sleep 1
+                        trace2 "Y Colision detected for value [$curValue] at [$x,$y]"
                         result=$COLISION_DETECTED_Y;
 			break;
                 fi
@@ -274,6 +281,9 @@ piece.trace() {
 
         if trace.enabled; then
                 trace2 "\n\nPIECE ($stage): \n\n $(array.print.sorted piece)"
+		return 0
+	else
+		return 1
         fi
 }
 
