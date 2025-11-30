@@ -12,53 +12,22 @@ NO_COLISION_DETECTED=0
 COLISION_DETECTED_X=1
 COLISION_DETECTED_Y=2
 
-# All tetris pieces and their hardcoded rotations to LEFT
-PIECE[1,1]="3,2 3,3 3,4 4,4 5,4"
-PIECE[1,2]="-2,-2 -1,-1 0,0 -1,-1 -2,-2"
-#PIECE[1,2]="0,0 0,0 0,0 0,0 0,0"
-PIECE[1,3]="0,0 0,0 0,0 0,0 0,0"
-PIECE[1,4]="0,0 0,0 0,0 0,0 0,0"
-
-PIECE[2,1]="3,2 3,3 4,2 4,3"
-PIECE[2,2]="0,0 0,0 0,0 0,0"
-PIECE[2,3]="0,0 0,0 0,0 0,0"
-PIECE[2,4]="0,0 0,0 0,0 0,0"
-
-PIECE[3,1]="3,2 3,3 3,4 3,5 3,6"
-PIECE[3,2]="0,0 0,0 0,0 0,0 0,0"
-PIECE[3,3]="0,0 0,0 0,0 0,0 0,0"
-PIECE[3,4]="0,0 0,0 0,0 0,0 0,0"
-
-PIECE[4,1]="3,2 3,3 4,3"
-PIECE[4,2]="0,0 0,0 0,0"
-PIECE[4,3]="0,0 0,0 0,0"
-PIECE[4,4]="0,0 0,0 0,0"
-
-PIECE[5,1]="3,2 4,2 5,2 4,3"
-PIECE[5,2]="0,0 0,0 0,0 0,0"
-PIECE[5,3]="0,0 0,0 0,0 0,0"
-PIECE[5,4]="0,0 0,0 0,0 0,0"
-
-PIECE[6,1]="3,2 4,2 5,2 4,3 4,4"
-PIECE[6,2]="0,0 0,0 0,0 0,0 0,0"
-PIECE[6,3]="0,0 0,0 0,0 0,0 0,0"
-PIECE[6,4]="0,0 0,0 0,0 0,0 0,0"
-
 piece.initialize() {
 	timer_start "piece.initialize"
 	trace "Initializing piece"
 
 	local pieceNumber=$(( (RANDOM % 6) + 1 ))
-	pieceNumber=1
 	CUR_PIECE="$pieceNumber,1"
 
-	for key in ${PIECE["$CUR_PIECE"]}; do
+	for key in ${PIECES["$CUR_PIECE"]}; do
 		if [[ $(array.get "board" "$key") != "$DEAD_PIECE" ]]; then
 			array.add "piece" "$key" "$PIECE"
 		fi
 	done
 
 	piece.add.to.changed "piece"
+
+	piece.trace "Initial piece"
 
 	timer_stop "piece.initialize"
 }
@@ -70,7 +39,7 @@ piece.rotate() {
 
 	trace "Rotating piece to [$ROTATE]"
 
-	piece.trace "Before rotate" && sleep 2
+	piece.trace "Before rotate"
 
 	local curPieceX=${CUR_PIECE%%,*}
         local curPieceY=${CUR_PIECE#*,}
@@ -122,7 +91,7 @@ piece.rotate() {
 
 	piece.add.to.changed "piece"
 
-	piece.trace "After rotate" && sleep 2
+	piece.trace "After rotate"
 
 	unset ROTATE
 

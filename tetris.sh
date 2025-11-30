@@ -11,10 +11,10 @@
 . ./subs/screen.sh
 . ./subs/logging.sh
 
+. ./subs/tetris/models.sh
 . ./subs/tetris/score.sh
 . ./subs/tetris/piece.sh
 . ./subs/tetris/game.sh
-
 
 main() {
 	screen.cursor.hide
