@@ -1,3 +1,5 @@
+NO_COLOR="\e[0m"
+
 PIECE_COLOR="\e[32;42m"
 PIECE="${PIECE_COLOR}P${NO_COLOR}"
 
@@ -6,8 +8,6 @@ DEAD_PIECE="${DEAD_PIECE_COLOR} ${NO_COLOR}"
 
 PIECE_STATUS="IDLE"
 
-NO_COLOR="\e[0m"
-
 NO_COLISION_DETECTED=0
 COLISION_DETECTED_X=1
 COLISION_DETECTED_Y=2
@@ -15,6 +15,8 @@ COLISION_DETECTED_Y=2
 piece.initialize() {
 	timer_start "piece.initialize"
 	trace "Initializing piece"
+
+	local key
 
 	local pieceNumber=$(( (RANDOM % 6) + 1 ))
 	CUR_PIECE="$pieceNumber,1"
@@ -28,7 +30,6 @@ piece.initialize() {
 	piece.add.to.changed "piece"
 
 	piece.trace "Initial piece"
-
 	timer_stop "piece.initialize"
 }
 
@@ -44,6 +45,7 @@ piece.rotate() {
 	local curPieceX=${CUR_PIECE%%,*}
         local curPieceY=${CUR_PIECE#*,}
 	local nextPiece="$curPieceX,$curPieceY"
+	local keys
 
 	case "$ROTATE" in
                         [L])	((curPieceY++))
@@ -63,9 +65,9 @@ piece.rotate() {
 	CUR_PIECE=$nextPiece
 
 	local curKeys=$(array.keys "piece")
-	local keyOps=()
+	declare -a keyOps
 
-	for key in ${PIECE[$nextPiece]}; do
+	for key in ${PIECES["$nextPiece"]}; do
 		keyOps+=("$key")
 	done
 
@@ -75,27 +77,27 @@ piece.rotate() {
 	local i=0
 
 	for key in $curKeys; do
-		((i++))
-		x=${key%%,*}
-        	y=${key#*,}
+		local x=${key%%,*}
+        	local y=${key#*,}
 
-		ops=${keyOps[$i]}
-		opx=${ops%%,*}
-        	opy=${ops#*,}
+		local ops=${keyOps[$i]}
+		local opx=${ops%%,*}
+        	local opy=${ops#*,}
 
 		x=$((x+opx))
 		y=$((y+opy))
 
 		array.add "piece" "$x,$y" "$PIECE"
+
+		((i++))
 	done
 
 	piece.add.to.changed "piece"
 
 	piece.trace "After rotate"
+	timer_stop "piece.rotate"
 
 	unset ROTATE
-
-	timer_stop "piece.rotate"
 
 	return 0
 }
@@ -128,10 +130,11 @@ piece.remove.from.board() {
 	local name=$1
 
         local keys=$(array.keys "$name")
+	local key
 
         for key in $keys; do
-                x=${key%%,*}
-                y=${key#*,}
+                local x=${key%%,*}
+                local y=${key#*,}
                 array.remove    "$name" "$key"
                 array.add       "board" "$x,$y" "$BLANK"
                 changedCells+=("$x,$y")
@@ -140,6 +143,7 @@ piece.remove.from.board() {
 
 piece.change.direction() {
         local keys=$(array.keys "piece")
+	local key
 
 	trace "Performing direction change logic ($DIRECTION)"
 
@@ -159,8 +163,8 @@ piece.change.direction() {
 	piece.remove.from.board "piece"
 
         for key in $keys; do
-                x=${key%%,*}
-                y=${key#*,}
+                local x=${key%%,*}
+                local y=${key#*,}
 
 		case "$DIRECTION" in
 			R) ((x++));;
@@ -184,6 +188,7 @@ piece.change.direction() {
 
 piece.gravity() {
 	local keys=$(array.keys "piece")
+	local key
 
 	trace "Performing gravity logic"
 
@@ -200,8 +205,8 @@ piece.gravity() {
 	piece.remove.from.board "piece"
 
 	for key in $keys; do
-		x=${key%%,*}
-		y=${key#*,}
+		local x=${key%%,*}
+		local y=${key#*,}
 		((y++))
 		array.add "piece" "$x,$y" "$PIECE"
 	done
@@ -218,10 +223,11 @@ piece.colision.detection() {
 	local result=$NO_COLISION_DETECTED
 
 	local keys=$(array.keys "$name")
+	local key
 
         for key in $keys; do
-                x=${key%%,*}
-                y=${key#*,}
+                local x=${key%%,*}
+                local y=${key#*,}
 
 		case "$DIRECTION" in
 			R) ((x++));;
@@ -237,7 +243,7 @@ piece.colision.detection() {
 			break;
                 fi
 
-                curValue=$(array.get "board" "$x,$y")
+                local curValue=$(array.get "board" "$x,$y")
 
 		if [[ $curValue == "$DEAD_PIECE" || $y -ge $((ROWS)) ]]; then
                         trace2 "Y Colision detected for value [$curValue] at [$x,$y]" && sleep 1
@@ -256,6 +262,7 @@ piece.add.board() {
 
 piece.add.to.changed() {
 	local name=$1
+	local key
 
 	for key in $(array.keys "$name"); do
 		changedCells+=("$key")
@@ -274,6 +281,7 @@ piece.kill() {
 	local name=$1
 
 	local keys=$(array.keys "$name")
+	local key
 
 	piece.add.to.changed 	"$name"
 	piece.remove.from.board "$name"
