@@ -46,11 +46,13 @@ piece.rotate() {
         local curRotation=${CUR_ROTATION#*,}
 	local nextRotation="$curPiece,$curRotation"
 	local keys
+	local multiplier=1
 
 	case "$ROTATE" in
                         [L])	((curRotation++))
 				;;
                         [R])	((curRotation--))
+				multiplier=-1
 				;;
 	esac
 
@@ -88,8 +90,8 @@ piece.rotate() {
 		local opx=${ops%%,*}
         	local opy=${ops#*,}
 
-		local newx=$((x+opx))
-		local newy=$((y+opy))
+		local newx=$((x+opx*multiplier))
+		local newy=$((y+opy*multiplier))
 
 		trace2 "x,y = [$x,$y], opx,opy = [$opx,$opy], newx,newy [$newx,$newy]"
 
