@@ -64,8 +64,6 @@ piece.rotate() {
 
 	nextRotation="$curPiece,$curRotation"
 
-	CUR_ROTATION=$nextRotation
-
 	local curKeys=$(array.keys "piece")
 	declare -a keyOps
 
@@ -78,7 +76,9 @@ piece.rotate() {
 
 	piece.kill "piece"
 
-	trace2 "ROTATION = [$nextRotation], KeyOps = [${keyOps[*]}]" && sleep 10
+	trace2 "PREVIOUS_ROT = [$CUR_ROTATION], ROT_TO_BE_APPLIED = [$nextRotation], OPS = [${keyOps[*]}], MULT = [$multiplier]" && sleep 5
+
+	CUR_ROTATION=$nextRotation
 
 	local i=0
 
