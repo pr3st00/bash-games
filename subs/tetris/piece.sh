@@ -314,10 +314,14 @@ piece.is.row.completed() {
 }
 
 piece.handle.completed.row() {
+	local completed=0
+
 	for key in "${changedCells[@]}"; do
 		local y=${key#*,}
 
 		if piece.is.row.completed "$y"; then
+			score.add "100"
+			((completed++))
 			for (( x=2;x<COLS;x++ )); do
 				array.add "board" "$x,$y" "$BLANK"
 				changedCells+=($x,$y)
@@ -329,6 +333,7 @@ piece.handle.completed.row() {
 		fi
 	done
 
+	score.add "$((100*completed))"
 
 	return 1;
 }

@@ -1,6 +1,6 @@
 # Board parameters
 COLS=20
-ROWS=30
+ROWS=20
 
 BORDER_COLOR="\e[30;43m"
 NO_COLOR="\e[0m"
