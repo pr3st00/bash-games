@@ -134,6 +134,8 @@ game.loop() {
 		piece.move
 		piece.add.board
 
+		piece.handle.completed.row
+
 		board.draw
 
 		sleep $(bc <<< "$CONSTANT_DELAY + (10-$SPEED)/10")

@@ -301,4 +301,54 @@ piece.kill() {
 	done
 }
 
+piece.is.row.completed() {
+	local row=$1
+
+	for (( x=2;x<COLS-1;x++ )); do
+		if [[ $(array.get "board" "$x,$y") != "$DEAD_PIECE" ]]; then
+			return 1;
+		fi
+	done
+
+	return 0 
+}
+
+piece.handle.completed.row() {
+	for key in "${changedCells[@]}"; do
+		local y=${key#*,}
+
+		if piece.is.row.completed "$y"; then
+			for (( x=2;x<COLS;x++ )); do
+				array.add "board" "$x,$y" "$BLANK"
+				changedCells+=($x,$y)
+
+			done
+
+			piece.bring.dead.cells.down
+			return 0;
+		fi
+	done
+
+
+	return 1;
+}
+
+piece.bring.dead.cells.down() {
+
+	for ((y=ROWS-1;y>1;y--)); do
+		for ((x=2;x<COLS;x++)); do
+			local curPiece=$(array.get "board" "$x,$y")
+			local belowPiece=$(array.get "board" "$x,$((y+1))")
+
+			if [[ $curPiece == "$DEAD_PIECE" && $belowPiece == "$BLANK" ]]; then
+				array.add "board" "$x,$y" 	"$BLANK"
+				array.add "board" "$x,$((y+1))"	"$DEAD_PIECE"
+				changedCells+=("$x,$y")
+				changedCells+=("$x,$((y+1))")
+			fi
+		done
+	done
+
+}
+
 # EOF
