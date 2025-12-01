@@ -23,6 +23,12 @@ a = move left <br/>
 d = move right <br/>
 q = quit <br/>
 
+<br/>
+(tetris only) </br>
+k = rotate right <br/>
+l = rotate left <br/>
+
+
 ## Current Feature Requests/Suggestions
 Pending..
 
