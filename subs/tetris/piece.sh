@@ -19,10 +19,9 @@ piece.initialize() {
 	local key
 
 	local pieceNumber=$(( (RANDOM % 6) + 1 ))
-	local pieceNumber=1
-	CUR_PIECE="$pieceNumber,1"
+	CUR_ROTATION="$pieceNumber,0"
 
-	for key in ${PIECES["$CUR_PIECE"]}; do
+	for key in ${PIECES["$pieceNumber"]}; do
 		if [[ $(array.get "board" "$key") != "$DEAD_PIECE" ]]; then
 			array.add "piece" "$key" "$PIECE"
 		fi
@@ -43,32 +42,32 @@ piece.rotate() {
 
 	piece.trace "Before rotate"
 
-	local curPieceX=${CUR_PIECE%%,*}
-        local curPieceY=${CUR_PIECE#*,}
-	local nextPiece="$curPieceX,$curPieceY"
+	local curPiece=${CUR_ROTATION%%,*}
+        local curRotation=${CUR_ROTATION#*,}
+	local nextRotation="$curPiece,$curRotation"
 	local keys
 
 	case "$ROTATE" in
-                        [L])	((curPieceY++))
+                        [L])	((curRotation++))
 				;;
-                        [R])	((curPieceY--))
+                        [R])	((curRotation--))
 				;;
 	esac
 
-	if [[ $curPieceY -gt 5 ]]; then
-		curPieceY=2
-	elif [[ $curPieceY -lt 2 ]]; then
-		curPieceY=5
+	if [[ $curRotation -gt 4 ]]; then
+		curRotation=1
+	elif [[ $curRotation -lt 1 ]]; then
+		curRotation=4
 	fi
 
-	nextPiece="$curPieceX,$curPieceY"
+	nextRotation="$curPiece,$curRotation"
 
-	CUR_PIECE=$nextPiece
+	CUR_ROTATION=$nextRotation
 
 	local curKeys=$(array.keys "piece")
 	declare -a keyOps
 
-	for key in ${PIECES["$nextPiece"]}; do
+	for key in ${ROTATIONS["$nextRotation"]}; do
 		keyOps+=("$key")
 	done
 
@@ -77,7 +76,7 @@ piece.rotate() {
 
 	piece.kill "piece"
 
-	trace2 "NEXTPIECE = [$nextPiece], KeyOps = [${keyOps[*]}]"
+	trace2 "ROTATION = [$nextRotation], KeyOps = [${keyOps[*]}]" && sleep 10
 
 	local i=0
 
