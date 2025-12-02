@@ -12,6 +12,8 @@ NO_COLISION_DETECTED=0
 COLISION_DETECTED_X=1
 COLISION_DETECTED_Y=2
 
+LAST_ROTATE="NONE"
+
 piece.initialize() {
 	timer_start "piece.initialize"
 	trace "Initializing piece"
@@ -20,6 +22,7 @@ piece.initialize() {
 
 	local pieceNumber=$(( (RANDOM % 6) + 1 ))
 	CUR_ROTATION="$pieceNumber,0"
+	LAST_ROTATE="NONE"
 
 	for key in ${PIECES["$pieceNumber"]}; do
 		if [[ $(array.get "board" "$key") != "$DEAD_PIECE" ]]; then
@@ -49,16 +52,16 @@ piece.rotate() {
 	local multiplier=1
 
 	case "$ROTATE" in
-                        [L])	((curRotation++))
+                        [L])	[[ $LAST_ROTATE == $ROTATE ]] && ((curRotation++))
 				;;
-                        [R])	((curRotation--))
+                        [R])	[[ $LAST_ROTATE == $ROTATE ]] && ((curRotation--))
 				multiplier=-1
 				;;
 	esac
 
 	if [[ $curRotation -gt 4 ]]; then
 		curRotation=1
-	elif [[ $curRotation -lt 1 ]]; then
+	elif [[ $curRotation -lt 0 ]]; then
 		curRotation=4
 	fi
 
@@ -105,6 +108,7 @@ piece.rotate() {
 	piece.trace "After rotate"
 	timer_stop "piece.rotate"
 
+	LAST_ROTATE=$ROTATE
 	unset ROTATE
 
 	return 0
