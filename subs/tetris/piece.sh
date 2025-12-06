@@ -19,8 +19,9 @@ piece.initialize() {
 	trace "Initializing piece"
 
 	local key
+	local availablePieces=${#PIECES[@]}
 
-	local pieceNumber=$(( (RANDOM % 6) + 1 ))
+	local pieceNumber=$(( (RANDOM % availablePieces) + 1 ))
 	CUR_ROTATION="$pieceNumber,0"
 	LAST_ROTATE="NONE"
 
