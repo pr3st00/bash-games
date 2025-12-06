@@ -4,14 +4,14 @@ array.keys() {
   local array=$1
   local -n order=${array}_ORDER
 
-  printf "%s\n" ${order[@]}
+  printf "%s\n" "${order[@]}"
 }
 
 array.keys.sorted() {
   local array=$1
   local -n order=${array}_ORDER
 
-  printf "%s\n" ${order[@]} | sort -n
+  printf "%s\n" "${order[@]}" | sort -n
 }
 
 array.key.exists() {
@@ -52,7 +52,7 @@ array.add() {
 		order+=("$key")
 	fi
 
-	map[$key]="$value";
+	map["$key"]="$value";
 }
 
 array.remove() {
@@ -71,7 +71,7 @@ array.remove() {
 
 	order=("${new_array[@]}")
 
-	unset map[$key];
+	unset map["$key"];
 
 	if [[ $returnValue == "1" ]]; then
 		printf "%s\n" "$key"
@@ -92,14 +92,14 @@ array.remove.by.number() {
 
         element=${order[$index]};
 
-        array.remove $array $element $returnValue
+        array.remove "$array" "$element" "$returnValue"
 }
 
 array.remove.first() {
 	local array=$1
 	local returnValue=$2
 
-        array.remove.by.number $array 0 $returnValue
+        array.remove.by.number "$array" 0 "$returnValue"
 }
 
 array.get() {
@@ -115,7 +115,7 @@ array.print() {
 	local array=$1
 	local n=0
 
-	for key in $(array.keys $array); do
+	for key in $(array.keys "$array"); do
 		((n++))
 		value=$(array.get "$array" "$key")
         	printf "%s" "[$key] => [$value]  "
@@ -130,7 +130,7 @@ array.print.sorted() {
 	local array=$1
 	local n=0
 
-	for key in $(array.keys.sorted $array); do
+	for key in $(array.keys.sorted "$array"); do
 		((n++))
 		value=$(array.get "$array" "$key")
         	printf "%s" "[$key] => [$value]  "
@@ -150,7 +150,7 @@ array.copy() {
 	local -n map=${source}_MAP
 	local -n order=${source}_ORDER
 
-	for key in $(array.keys $source); do
+	for key in $(array.keys "$source"); do
 		array.add "$dest" "$key" "${map[$key]}"
 	done
 }
