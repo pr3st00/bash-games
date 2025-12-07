@@ -53,9 +53,9 @@ piece.rotate() {
 	local multiplier=1
 
 	case "$ROTATE" in
-                        [L])	[[ $LAST_ROTATE == $ROTATE ]] && ((curRotation++))
+                        [L])	[[ "$LAST_ROTATE" == "$ROTATE" ]] && ((curRotation++))
 				;;
-                        [R])	[[ $LAST_ROTATE == $ROTATE ]] && ((curRotation--))
+                        [R])	[[ "$LAST_ROTATE" == "$ROTATE" ]] && ((curRotation--))
 				multiplier=-1
 				;;
 	esac
@@ -331,7 +331,7 @@ piece.handle.completed.row() {
 			((completed++))
 			for (( x=2;x<COLS;x++ )); do
 				array.add "board" "$x,$y" "$BLANK"
-				changedCells+=($x,$y)
+				changedCells+=("$x,$y")
 
 			done
 

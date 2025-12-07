@@ -19,8 +19,8 @@ food.create() {
 food.add() {
 	local x y
 
-	x=$(( (RANDOM % ($COLS - 2)) + 2 ))
-	y=$(( (RANDOM % ($ROWS - 2)) + 2 ))
+	x=$(( (RANDOM % (COLS - 2)) + 2 ))
+	y=$(( (RANDOM % (ROWS - 2)) + 2 ))
 
 	trace "Adding food at [$x,$y]"
 

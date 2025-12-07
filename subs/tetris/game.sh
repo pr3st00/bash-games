@@ -17,8 +17,6 @@ SIG_DEAD=HUP
 SIG_ROTATE_L=QUIT
 SIG_ROTATE_R=ALRM
 
-declare -A prohibitedMoves
-
 game.change.direction() {
 	local direction=$1
 	trace2 "Changing direction to [$direction]"
@@ -63,31 +61,30 @@ game.read.input() {
 		trace2 "Got key $key"
 
 		case "$key" in
-			[qQ]) 	kill -$SIG_QUIT		$game_pid
+			[qQ]) 	kill -$SIG_QUIT		"$game_pid"
 				return
 				;;
-			[wW]) 	kill -$SIG_UP		$game_pid
+			[wW]) 	kill -$SIG_UP		"$game_pid"
 				;;
-			[sS])	kill -$SIG_DOWN		$game_pid
+			[sS])	kill -$SIG_DOWN		"$game_pid"
 				;;
-			[aA]) 	kill -$SIG_LEFT		$game_pid
+			[aA]) 	kill -$SIG_LEFT		"$game_pid"
 				;;
-			[dD])	kill -$SIG_RIGHT	$game_pid
+			[dD])	kill -$SIG_RIGHT	"$game_pid"
 				;;
-			[kK])	kill -$SIG_ROTATE_L	$game_pid
+			[kK])	kill -$SIG_ROTATE_L	"$game_pid"
 				;;
-			[lL])	kill -$SIG_ROTATE_R	$game_pid
+			[lL])	kill -$SIG_ROTATE_R	"$game_pid"
 				;;
 		esac
 	done
 }
 
 game.is.over() {
-	local keys=$(array.keys "board")
 	local x
 	local result=1
 
-	for ((x=1;x<$COLS;x++)); do
+	for ((x=1;x<COLS;x++)); do
 		[[ $(array.get "board" "$x,2") == "$DEAD_PIECE" ]] && result=0
 	done
 
@@ -126,7 +123,7 @@ game.loop() {
 			return 1
 		fi
 
-		if [[ $((frame % $GRAVITY_FRAME_SKIP)) == 0 ]]; then
+		if [[ $((frame % GRAVITY_FRAME_SKIP)) == 0 ]]; then
 			piece.gravity
 		fi
 
@@ -138,7 +135,7 @@ game.loop() {
 
 		board.draw
 
-		sleep $(bc <<< "$CONSTANT_DELAY + (10-$SPEED)/10")
+		sleep "$(bc <<< "$CONSTANT_DELAY + (10-$SPEED)/10")"
 
 		timer_stop "game_loop"		
 	done

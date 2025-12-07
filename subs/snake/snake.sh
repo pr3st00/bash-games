@@ -17,8 +17,7 @@ snake.initialize() {
 
 snake.move() {
 	timer_start "snake.move"
-	local x y i key
-	local keyList
+	local x y key
 
 	trace "Moving snake"
 

@@ -55,16 +55,16 @@ game.read.input() {
 		trace2 "Got key $key"
 
 		case "$key" in
-			[qQ]) 	kill -$SIG_QUIT		$game_pid
+			[qQ]) 	kill -$SIG_QUIT		"$game_pid"
 				return
 				;;
-			[wW]) 	kill -$SIG_UP		$game_pid
+			[wW]) 	kill -$SIG_UP		"$game_pid"
 				;;
-			[sS])	kill -$SIG_DOWN		$game_pid
+			[sS])	kill -$SIG_DOWN		"$game_pid"
 				;;
-			[aA]) 	kill -$SIG_LEFT		$game_pid
+			[aA]) 	kill -$SIG_LEFT		"$game_pid"
 				;;
-			[dD])	kill -$SIG_RIGHT	$game_pid
+			[dD])	kill -$SIG_RIGHT	"$game_pid"
 				;;
 		esac
 	done
@@ -135,7 +135,7 @@ game.loop() {
 
 		snake.add.board
 		board.draw
-		sleep $(bc <<< "$CONSTANT_DELAY + (10-$SPEED)/10")
+		sleep "$(bc <<< "$CONSTANT_DELAY + (10-$SPEED)/10")"
 
 		timer_stop "game_loop"		
 	done
